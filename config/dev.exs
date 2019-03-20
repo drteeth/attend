@@ -52,7 +52,8 @@ config :attend, AttendWeb.Endpoint,
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
       ~r{lib/attend_web/views/.*(ex)$},
-      ~r{lib/attend_web/templates/.*(eex)$}
+      ~r{lib/attend_web/templates/.*(eex)$},
+      ~r{lib/my_app_web/live/.*(ex)$}
     ]
   ]
 
@@ -73,3 +74,5 @@ config :attend, Attend.Repo,
   database: "attend_dev",
   hostname: "localhost",
   pool_size: 10
+
+import_config "dev.secret.exs"
