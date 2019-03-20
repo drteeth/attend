@@ -75,4 +75,14 @@ config :attend, Attend.Repo,
   hostname: "localhost",
   pool_size: 10
 
-import_config "dev.secret.exs"
+config :eventstore, EventStore.Storage,
+  serializer: Commanded.Serialization.JsonSerializer,
+  username: "postgres",
+  password: "postgres",
+  database: "eventstore_dev",
+  hostname: "localhost",
+  pool_size: 10
+
+if File.exists?("config/dev.secret.exs") do
+  import_config "dev.secret.exs"
+end

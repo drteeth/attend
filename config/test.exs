@@ -16,3 +16,15 @@ config :attend, Attend.Repo,
   database: "attend_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :eventstore, EventStore.Storage,
+  serializer: Commanded.Serialization.JsonSerializer,
+  username: "postgres",
+  password: "postgres",
+  database: "eventstore_dev",
+  hostname: "localhost",
+  pool_size: 10
+
+if File.exists?("config/test.secret.exs") do
+  import_config "test.secret.exs"
+end

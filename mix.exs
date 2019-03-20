@@ -20,7 +20,7 @@ defmodule Attend.MixProject do
   def application do
     [
       mod: {Attend.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :eventstore]
     ]
   end
 
@@ -41,9 +41,11 @@ defmodule Attend.MixProject do
       {:phoenix_html, "~> 2.11"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
-      {:jason, "~> 1.0"},
+      {:jason, "~> 1.1"},
       {:plug_cowboy, "~> 2.0"},
-      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"}
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
+      {:commanded, "~> 0.18.0"},
+      {:commanded_eventstore_adapter, "~> 0.5"}
     ]
   end
 
