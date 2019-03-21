@@ -1,0 +1,26 @@
+<%= @team.name %>
+
+<ul>
+  <%= for player <- @team.players do %>
+    <li><%= player.name %> &lt;<%= player.email %>&gt;</li>
+  <% end %>
+</ul>
+
+<%= if @team.name == nil do %>
+<%= form_for @changeset, "#", [as: :team, phx_change: :validate, phx_submit: :add_team], fn f -> %>
+  <%= text_input f, :name, placeholder: "Team name"%>
+
+  <%= if @changeset.valid? do %>
+    <%= submit "Create team" %>
+  <% else %>
+    <%= submit "Create team", disabled: true %>
+  <% end %>
+<% end %>
+<% end %>
+
+<%= form_for @new_player, "#", [as: :player, phx_submit: :add_player], fn f -> %>
+  <%= text_input f, :name, placeholder: "Name" %>
+  <%= text_input f, :email, placeholder: "Email" %>
+
+  <%= submit "Add player" %>
+<% end %>

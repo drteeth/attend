@@ -45,7 +45,8 @@ defmodule Attend.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:commanded, "~> 0.18.0"},
-      {:commanded_eventstore_adapter, "~> 0.5"}
+      {:commanded_eventstore_adapter, "~> 0.5"},
+      {:eventstore, "~> 0.16.1"}
     ]
   end
 
