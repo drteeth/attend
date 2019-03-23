@@ -18,6 +18,8 @@ defmodule AttendWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    resources "/teams", TeamController, only: [:index, :show, :new]
   end
 
   # Other scopes may use custom stacks.

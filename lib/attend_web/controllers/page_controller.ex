@@ -2,6 +2,6 @@ defmodule AttendWeb.PageController do
   use AttendWeb, :controller
 
   def index(conn, _params) do
-    render(conn, "index.html", team_id: "Team123")
+    render(conn, "index.html")
   end
 end

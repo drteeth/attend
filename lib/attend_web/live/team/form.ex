@@ -1,4 +1,4 @@
-defmodule Attend.TeamLive do
+defmodule AttendWeb.Team.Form do
   use Phoenix.LiveView
 
   alias Attend.Models.{Player, Team}
@@ -32,7 +32,7 @@ defmodule Attend.TeamLive do
 
   @impl true
   def render(assigns) do
-    AttendWeb.PageView.render("team.html", assigns)
+    AttendWeb.TeamView.render("team.html", assigns)
   end
 
   @impl true
