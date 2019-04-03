@@ -9,13 +9,16 @@ config :attend, AttendWeb.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
+# Commands are strongly consistent by default
+config :commanded, default_consistency: :strong
+
 # Configure your database
 config :attend, Attend.Repo,
   username: "postgres",
   password: "postgres",
   database: "attend_test",
   hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
+  pool_size: 1
 
 config :eventstore, EventStore.Storage,
   serializer: Commanded.Serialization.JsonSerializer,
@@ -23,7 +26,7 @@ config :eventstore, EventStore.Storage,
   password: "postgres",
   database: "attend_eventstore_test",
   hostname: "localhost",
-  pool_size: 10
+  pool_size: 1
 
 if File.exists?("config/test.secret.exs") do
   import_config "test.secret.exs"

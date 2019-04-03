@@ -20,18 +20,25 @@ defmodule AttendWeb.ChannelCase do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
 
+      import Ecto
+      import Ecto.Changeset
+      import Ecto.Query
+      import Commanded.Assertions.EventAssertions
+
       # The default endpoint for testing
       @endpoint AttendWeb.Endpoint
     end
   end
 
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Attend.Repo)
+  setup do
+    {:ok, _} = Application.ensure_all_started(:attend)
 
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Attend.Repo, {:shared, self()})
-    end
+    on_exit(fn ->
+      :ok = Application.stop(:attend)
+      :ok = Application.stop(:commanded)
+      :ok = Application.stop(:eventstore)
 
-    :ok
+      Attend.Storage.reset!()
+    end)
   end
 end

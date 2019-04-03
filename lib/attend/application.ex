@@ -14,7 +14,7 @@ defmodule Attend.Application do
       AttendWeb.Endpoint,
       # Starts a worker by calling: Attend.Worker.start_link(arg)
       # {Attend.Worker, arg},
-      Attend.Attendance.Checker
+      Attend.ProcessManagers.Checker
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

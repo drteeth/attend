@@ -26,12 +26,16 @@ defmodule AttendWeb.ConnCase do
     end
   end
 
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Attend.Repo)
+  setup do
+    {:ok, _} = Application.ensure_all_started(:attend)
 
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Attend.Repo, {:shared, self()})
-    end
+    on_exit(fn ->
+      :ok = Application.stop(:attend)
+      :ok = Application.stop(:commanded)
+      :ok = Application.stop(:eventstore)
+
+      Attend.Storage.reset!()
+    end)
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end

@@ -1,9 +1,9 @@
-defmodule Attend.Scheduling.Aggregates.Game do
+defmodule Attend.Aggregates.Game do
   defstruct [:game_id, :location, :team_id, :start_time]
 
-  alias Attend.Scheduling.Aggregates.Game
-  alias Attend.Scheduling.Commands.SchedulePickupGame
-  alias Attend.Scheduling.Events.GameScheduled
+  alias __MODULE__, as: Game
+  alias Attend.Commands.SchedulePickupGame
+  alias Attend.Events.GameScheduled
 
   def execute(%Game{game_id: nil}, %SchedulePickupGame{} = command) do
     %GameScheduled{
@@ -14,7 +14,7 @@ defmodule Attend.Scheduling.Aggregates.Game do
     }
   end
 
-  def apply(%Game{} = game, %GameScheduled{} = event) do
+  def apply(%Game{}, %GameScheduled{} = event) do
     %Game{
       game_id: event.game_id,
       team_id: event.team_id,

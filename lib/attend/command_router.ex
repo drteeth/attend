@@ -1,14 +1,21 @@
 defmodule Attend.CommandRouter do
   use Commanded.Commands.Router
 
-  alias Attend.{Team, RegisterTeam}
+  alias Attend.Commands.{
+    RegisterTeam,
+    CheckAttendance,
+    AddPlayerToTeam,
+    SchedulePickupGame
+  }
 
-  alias Attend.Scheduling.Commands.SchedulePickupGame
-  alias Attend.Scheduling.Aggregates.Game
-  alias Attend.Attendance.{AttendanceCheck, CheckAttendance}
+  alias Attend.Aggregates.{
+    Team,
+    Game,
+    AttendanceCheck
+  }
 
   identify(Team, by: :team_id)
-  dispatch([RegisterTeam, Team.AddPlayerToTeam], to: Team)
+  dispatch([RegisterTeam, AddPlayerToTeam], to: Team)
 
   identify(Game, by: :game_id)
   dispatch([SchedulePickupGame, CheckAttendance], to: Game)

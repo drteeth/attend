@@ -22,17 +22,20 @@ defmodule Attend.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Attend.DataCase
+      import Commanded.Assertions.EventAssertions
     end
   end
 
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Attend.Repo)
+  setup do
+    {:ok, _} = Application.ensure_all_started(:attend)
 
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Attend.Repo, {:shared, self()})
-    end
+    on_exit(fn ->
+      :ok = Application.stop(:attend)
+      :ok = Application.stop(:commanded)
+      :ok = Application.stop(:eventstore)
 
-    :ok
+      Attend.Storage.reset!()
+    end)
   end
 
   @doc """

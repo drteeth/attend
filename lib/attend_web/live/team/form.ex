@@ -47,15 +47,11 @@ defmodule AttendWeb.Team.Form do
     team = socket.assigns.team
     changeset = Team.changeset(team, params)
 
-    IO.inspect(changeset)
-
     id = team.team_id
     name = changeset.changes.name
 
-    command = %Attend.RegisterTeam{team_id: id, name: name}
-
-    case Attend.CommandRouter.dispatch(command) do
-      :ok ->
+    case Attend.register_team(name, id) do
+      {:ok, _game_id} ->
         {:noreply, socket}
 
       {:error, _reason} ->
@@ -65,17 +61,11 @@ defmodule AttendWeb.Team.Form do
 
   def handle_event("add_player", %{"player" => params}, socket) do
     team_id = socket.assigns.team.team_id
+    name = params["name"]
+    email = params["email"]
 
-    player = %{
-      team_id: team_id,
-      name: params["name"],
-      email: params["email"]
-    }
-
-    command = %Attend.Team.AddPlayerToTeam{team_id: team_id, player: player}
-
-    case Attend.CommandRouter.dispatch(command) do
-      :ok ->
+    case Attend.add_player_to_team(team_id, name, email) do
+      {:ok, _player_id} ->
         {:noreply, socket}
 
       {:error, _reason} ->
@@ -86,7 +76,7 @@ defmodule AttendWeb.Team.Form do
   def handle_info({:events, events}, socket) do
     team =
       Enum.reduce(events, socket.assigns.team, fn e, t ->
-        Attend.Team.apply(t, e)
+        Attend.Aggregates.Team.apply(t, e)
       end)
 
     {:noreply, assign(socket, team: team)}

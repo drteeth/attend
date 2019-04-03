@@ -46,6 +46,7 @@ defmodule Attend.MixProject do
       {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:commanded, "~> 0.18.0"},
       {:commanded_eventstore_adapter, "~> 0.5"},
+      {:commanded_ecto_projections, "~> 0.8"},
       {:eventstore, "~> 0.16.1"}
     ]
   end
