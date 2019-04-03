@@ -25,8 +25,6 @@ defmodule Attend.Storage do
   defp truncate_readstore_tables do
     """
     TRUNCATE TABLE
-    rooms,
-    messages,
     projection_versions
     RESTART IDENTITY
     CASCADE;
