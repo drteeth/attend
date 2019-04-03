@@ -21,7 +21,7 @@ config :eventstore, EventStore.Storage,
   serializer: Commanded.Serialization.JsonSerializer,
   username: "postgres",
   password: "postgres",
-  database: "eventstore_dev",
+  database: "attend_eventstore_test",
   hostname: "localhost",
   pool_size: 10
 

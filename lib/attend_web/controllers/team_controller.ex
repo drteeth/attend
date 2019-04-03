@@ -9,13 +9,13 @@ defmodule AttendWeb.TeamController do
   end
 
   def new(conn, _params) do
-    live_render(conn, Team.Form, session: %{ team_id: "FakeTeam" })
+    live_render(conn, Team.Form, session: %{team_id: "FakeTeam"})
   end
 
   def show(conn, params) do
-    IO.inspect(params) # TODO get the ID from the params
+    # TODO get the ID from the params
+    IO.inspect(params)
     # TODO preload the team?
-    live_render(conn, Team.Form, session: %{ team_id: "FakeTeam" })
+    live_render(conn, Team.Form, session: %{team_id: "FakeTeam"})
   end
-
 end

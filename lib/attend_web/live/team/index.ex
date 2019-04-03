@@ -1,9 +1,12 @@
 defmodule AttendWeb.Team.Index do
   use Phoenix.LiveView
 
-  alias Attend.Models.{Player, Team}
-
-  def mount(%{team_id: team_id}, socket) do
+  def mount(_args, socket) do
+    {:ok, socket}
   end
 
+  def render(_params) do
+    teams = []
+    AttendWeb.TeamView.render("index.html", teams: teams)
+  end
 end

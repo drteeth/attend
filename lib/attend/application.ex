@@ -11,9 +11,10 @@ defmodule Attend.Application do
       # Start the Ecto repository
       Attend.Repo,
       # Start the endpoint when the application starts
-      AttendWeb.Endpoint
+      AttendWeb.Endpoint,
       # Starts a worker by calling: Attend.Worker.start_link(arg)
       # {Attend.Worker, arg},
+      Attend.Attendance.Checker
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

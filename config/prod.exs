@@ -69,7 +69,7 @@ config :logger, level: :info
 config :attend, Attend.Repo,
   username: "postgres",
   password: "postgres",
-  database: "attend_dev",
+  database: "attend",
   hostname: "localhost",
   pool_size: 10
 
@@ -77,7 +77,7 @@ config :eventstore, EventStore.Storage,
   serializer: Commanded.Serialization.JsonSerializer,
   username: "postgres",
   password: "postgres",
-  database: "eventstore_dev",
+  database: "attend_eventstore",
   hostname: "localhost",
   pool_size: 10
 
