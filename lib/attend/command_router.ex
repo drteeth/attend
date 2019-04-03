@@ -15,11 +15,11 @@ defmodule Attend.CommandRouter do
   }
 
   identify(Team, by: :team_id)
-  dispatch([RegisterTeam, AddPlayerToTeam], to: Team)
+  dispatch([RegisterTeam, AddPlayerToTeam, CheckAttendance], to: Team)
 
   identify(Game, by: :game_id)
-  dispatch([SchedulePickupGame, CheckAttendance], to: Game)
+  dispatch([SchedulePickupGame], to: Game)
 
   identify(AttendanceCheck, by: :check_id)
-  dispatch([], to: AttendanceCheck)
+  dispatch([], to: AttendanceChkck)
 end

@@ -11,6 +11,7 @@ defmodule Attend.Aggregates.Team do
   end
 
   def execute(%Team{}, %AddPlayerToTeam{team_id: id, player: player}) do
+    # TODO don't assign ID here.
     player = Map.put(player, :id, Ecto.UUID.generate())
     %PlayerAddedToTeam{team_id: id, player: player}
   end
@@ -23,6 +24,8 @@ defmodule Attend.Aggregates.Team do
       players: team.players
     }
   end
+
+  # TODO: CompleteAttendanceCheck, FailAttendanceCheck
 
   def apply(%Team{}, %TeamRegistered{} = event) do
     %Team{
