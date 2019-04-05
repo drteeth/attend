@@ -5,7 +5,8 @@ defmodule Attend.CommandRouter do
     RegisterTeam,
     CheckAttendance,
     AddPlayerToTeam,
-    SchedulePickupGame
+    SchedulePickupGame,
+    AskPlayerForAttendance
   }
 
   alias Attend.Aggregates.{
@@ -21,5 +22,5 @@ defmodule Attend.CommandRouter do
   dispatch([SchedulePickupGame], to: Game)
 
   identify(AttendanceCheck, by: :check_id)
-  dispatch([], to: AttendanceChkck)
+  dispatch([AskPlayerForAttendance], to: AttendanceCheck)
 end

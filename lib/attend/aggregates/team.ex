@@ -21,6 +21,7 @@ defmodule Attend.Aggregates.Team do
       check_id: command.check_id,
       game_id: command.game_id,
       team_id: command.team_id,
+      team_name: team.name,
       players: team.players
     }
   end

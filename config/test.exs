@@ -10,7 +10,7 @@ config :attend, AttendWeb.Endpoint,
 config :logger, level: :warn
 
 # Commands are strongly consistent by default
-config :commanded, default_consistency: :strong
+# config :commanded, default_consistency: :strong
 
 # Configure your database
 config :attend, Attend.Repo,

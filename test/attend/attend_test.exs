@@ -11,6 +11,8 @@ defmodule AttendTest do
 
     {:ok, _check_id} = Attend.check_attendance(game_id, team_id)
 
-    :timer.sleep(2000)
+    wait_for_event(Attend.Events.PlayerAskedForAttendance)
+
+    :timer.sleep(1000)
   end
 end
