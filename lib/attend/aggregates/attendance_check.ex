@@ -5,10 +5,10 @@ defmodule Attend.Aggregates.AttendanceCheck do
 
   alias __MODULE__
   alias Attend.Commands.{RequestAttendance, ConfirmAttendance}
-  alias Attend.Events.{PlayerAskedForAttendance, PlayerConfirmedAttendance}
+  alias Attend.Events.{AttendanceRequested, PlayerConfirmedAttendance}
 
   def execute(%AttendanceCheck{player_check_id: nil}, %RequestAttendance{} = command) do
-    %PlayerAskedForAttendance{
+    %AttendanceRequested{
       player_check_id: command.player_check_id,
       check_id: command.check_id,
       game_id: command.game_id,
@@ -28,7 +28,7 @@ defmodule Attend.Aggregates.AttendanceCheck do
     }
   end
 
-  def apply(%AttendanceCheck{} = check, %PlayerAskedForAttendance{} = event) do
+  def apply(%AttendanceCheck{} = check, %AttendanceRequested{} = event) do
     %{
       check
       | player_check_id: event.player_check_id,

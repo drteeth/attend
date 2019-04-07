@@ -1,4 +1,4 @@
-defmodule Attend.Events.PlayerAskedForAttendance do
+defmodule Attend.Events.AttendanceRequested do
 
   alias Ecto.UUID
 

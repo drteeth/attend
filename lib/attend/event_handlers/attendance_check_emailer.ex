@@ -6,7 +6,7 @@ defmodule Attend.EventHandlers.AtendanceCheckEmailer do
 
   alias Attend.Events.{
     GameScheduled,
-    PlayerAskedForAttendance
+    AttendanceRequested
   }
 
   def handle(%GameScheduled{} = event, _metadta) do
@@ -21,7 +21,7 @@ defmodule Attend.EventHandlers.AtendanceCheckEmailer do
     :ok
   end
 
-  def handle(%PlayerAskedForAttendance{} = event, _metadta) do
+  def handle(%AttendanceRequested{} = event, _metadta) do
     game = Repo.get!(Game, event.game_id)
 
     Attend.Email.attendance_check(

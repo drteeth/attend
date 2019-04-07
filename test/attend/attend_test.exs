@@ -15,7 +15,7 @@ defmodule AttendTest do
 
     {:ok, _check_id} = Attend.check_attendance(game_id, team_id)
 
-    wait_for_event(Events.PlayerAskedForAttendance)
+    wait_for_event(Events.AttendanceRequested)
 
     assert_receive({:delivered_email, email}, 100, Bamboo.Test.flunk_no_emails_received())
 
