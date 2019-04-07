@@ -6,7 +6,7 @@ defmodule Attend.CommandRouter do
     CheckAttendance,
     JoinTeam,
     SchedulePickupGame,
-    AskPlayerForAttendance,
+    RequestAttendance,
     ConfirmAttendance
   }
 
@@ -20,7 +20,7 @@ defmodule Attend.CommandRouter do
 
   dispatch(SchedulePickupGame, to: Game, identity: :game_id)
 
-  dispatch([AskPlayerForAttendance, ConfirmAttendance],
+  dispatch([RequestAttendance, ConfirmAttendance],
     to: AttendanceCheck,
     identity: :player_check_id
   )

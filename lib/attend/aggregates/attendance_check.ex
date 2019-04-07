@@ -4,10 +4,10 @@ defmodule Attend.Aggregates.AttendanceCheck do
   # TODO reason/message
 
   alias __MODULE__
-  alias Attend.Commands.{AskPlayerForAttendance, ConfirmAttendance}
+  alias Attend.Commands.{RequestAttendance, ConfirmAttendance}
   alias Attend.Events.{PlayerAskedForAttendance, PlayerConfirmedAttendance}
 
-  def execute(%AttendanceCheck{player_check_id: nil}, %AskPlayerForAttendance{} = command) do
+  def execute(%AttendanceCheck{player_check_id: nil}, %RequestAttendance{} = command) do
     %PlayerAskedForAttendance{
       player_check_id: command.player_check_id,
       check_id: command.check_id,

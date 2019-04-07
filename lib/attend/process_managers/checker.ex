@@ -9,7 +9,7 @@ defmodule Attend.ProcessManagers.Checker do
   alias __MODULE__, as: State
 
   alias Attend.Events.AttendanceCheckStarted
-  alias Attend.Commands.AskPlayerForAttendance
+  alias Attend.Commands.RequestAttendance
 
   def interested?(%AttendanceCheckStarted{} = event) do
     {:start, event.check_id}
@@ -19,7 +19,7 @@ defmodule Attend.ProcessManagers.Checker do
   def handle(%State{} = _state, %AttendanceCheckStarted{} = event) do
     event.players
     |> Enum.map(fn player ->
-      %AskPlayerForAttendance{
+      %RequestAttendance{
         player_check_id: player.player_check_id,
         check_id: event.check_id,
         game_id: event.game_id,
