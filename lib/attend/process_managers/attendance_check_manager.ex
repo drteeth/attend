@@ -14,6 +14,7 @@ defmodule Attend.ProcessManagers.AttendanceCheckManager do
   def interested?(%AttendanceCheckStarted{} = event) do
     {:start, event.check_id}
   end
+
   def interested?(_event), do: false
 
   def handle(%State{} = _state, %AttendanceCheckStarted{} = event) do

@@ -19,6 +19,7 @@ defmodule Attend.Email do
 
     maybe = Routes.attendance_url(Endpoint, :update, check_id, token: maybe_token)
 
+    # TODO: Use eex template to render the email bodies
     new_email(
       to: player.email,
       from: "reminder@example.com",

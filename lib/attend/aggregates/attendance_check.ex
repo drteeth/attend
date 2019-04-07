@@ -13,7 +13,7 @@ defmodule Attend.Aggregates.AttendanceCheck do
       check_id: command.check_id,
       game_id: command.game_id,
       team: command.team,
-      player: command.player,
+      player: command.player
     }
   end
 
