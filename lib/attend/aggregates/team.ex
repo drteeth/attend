@@ -3,7 +3,7 @@ defmodule Attend.Aggregates.Team do
 
   alias __MODULE__, as: Team
   alias Attend.Commands.{RegisterTeam, JoinTeam, CheckAttendance}
-  alias Attend.Events.{TeamRegistered, PlayerAddedToTeam, AttendanceCheckStarted}
+  alias Attend.Events.{TeamRegistered, JoinedTeam, AttendanceCheckStarted}
 
   def execute(%Team{}, %RegisterTeam{team_id: id, name: name}) do
     # TODO: don't register the same team twice
@@ -13,7 +13,7 @@ defmodule Attend.Aggregates.Team do
   def execute(%Team{}, %JoinTeam{team_id: id, player: player}) do
     # TODO don't assign ID here.
     player = Map.put(player, :id, Ecto.UUID.generate())
-    %PlayerAddedToTeam{team_id: id, player: player}
+    %JoinedTeam{team_id: id, player: player}
   end
 
   def execute(%Team{} = team, %CheckAttendance{} = command) do
@@ -37,7 +37,7 @@ defmodule Attend.Aggregates.Team do
     }
   end
 
-  def apply(%Team{} = team, %PlayerAddedToTeam{player: player}) do
+  def apply(%Team{} = team, %JoinedTeam{player: player}) do
     players = [player | team.players]
     %{team | players: players}
   end
