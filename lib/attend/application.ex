@@ -14,7 +14,7 @@ defmodule Attend.Application do
       AttendWeb.Endpoint,
       # Starts a worker by calling: Attend.Worker.start_link(arg)
       # {Attend.Worker, arg},
-      Attend.ProcessManagers.Checker,
+      Attend.ProcessManagers.AttendanceCheckManager,
       Attend.EventHandlers.AtendanceCheckEmailer
     ]
 

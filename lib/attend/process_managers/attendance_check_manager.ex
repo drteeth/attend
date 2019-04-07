@@ -1,4 +1,4 @@
-defmodule Attend.ProcessManagers.Checker do
+defmodule Attend.ProcessManagers.AttendanceCheckManager do
   use Commanded.ProcessManagers.ProcessManager,
     name: __MODULE__,
     router: Attend.CommandRouter
