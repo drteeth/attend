@@ -20,9 +20,9 @@ defmodule AttendWeb.Router do
     get "/", PageController, :index
 
     resources "/teams", TeamController, only: [:index, :show, :new]
+    resources "/attendance", AttendanceController, only: [:update]
   end
 
-  # Other scopes may use custom stacks.
   # scope "/api", AttendWeb do
   #   pipe_through :api
   # end

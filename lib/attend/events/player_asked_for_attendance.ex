@@ -1,13 +1,16 @@
 defmodule Attend.Events.PlayerAskedForAttendance do
+
+  alias Ecto.UUID
+
   @derive Jason.Encoder
   defstruct [
-    :player_check_id,
-    :check_id,
-    :game_id,
-    :team_id,
-    :player,
-    :yes_token,
-    :no_token,
-    :maybe_token,
+    player_check_id: nil,
+    check_id: nil,
+    game_id: nil,
+    team: nil,
+    player: nil,
+    yes_token: UUID.generate(),
+    no_token: UUID.generate(),
+    maybe_token: UUID.generate()
   ]
 end

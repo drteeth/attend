@@ -47,7 +47,8 @@ defmodule Attend.MixProject do
       {:commanded, "~> 0.18.0"},
       {:commanded_eventstore_adapter, "~> 0.5"},
       {:commanded_ecto_projections, "~> 0.8"},
-      {:eventstore, "~> 0.16.1"}
+      {:eventstore, "~> 0.16.1"},
+      {:bamboo, "~> 1.2"}
     ]
   end
 

@@ -1,28 +1,38 @@
 defmodule Attend.EventHandlers.AtendanceCheckEmailer do
   use Commanded.Event.Handler, name: __MODULE__
 
+  alias Attend.Repo
+  alias Attend.Projections.Game
+
   alias Attend.Events.{
     GameScheduled,
-    AttendanceCheckStarted,
-    PlayerAskedForAttendance,
+    PlayerAskedForAttendance
   }
 
   def handle(%GameScheduled{} = event, _metadta) do
-    # Bare event handler doesn't have state so either
-    # A) Make this a ProcessManager keyed on GameScheduled
-    # B) Project Team roster into the DB and read from that before sending the email
-    IO.inspect(event)
-    :ok
-  end
+    %Game{
+      id: event.game_id,
+      team_id: event.team_id,
+      start_time: NaiveDateTime.from_iso8601!(event.start_time),
+      location: event.location
+    }
+    |> Repo.insert()
 
-  def handle(%AttendanceCheckStarted{} = event, _metadta) do
-    IO.inspect(event)
     :ok
   end
 
   def handle(%PlayerAskedForAttendance{} = event, _metadta) do
-    IO.inspect(event)
+    game = Repo.get!(Game, event.game_id)
+
+    Attend.Email.attendance_check(
+      event.player_check_id,
+      event.team,
+      game,
+      event.player,
+      Map.take(event, [:yes_token, :no_token, :maybe_token])
+    )
+    |> Attend.Email.Mailer.deliver_later()
+
     :ok
   end
-
 end

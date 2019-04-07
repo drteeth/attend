@@ -20,9 +20,11 @@ defmodule Attend.Aggregates.Team do
     %AttendanceCheckStarted{
       check_id: command.check_id,
       game_id: command.game_id,
-      team_id: command.team_id,
-      team_name: team.name,
-      players: team.players
+      team: Map.from_struct(team),
+      players:
+        Enum.map(team.players, fn p ->
+          p |> Map.put(:player_check_id, Ecto.UUID.generate())
+        end)
     }
   end
 

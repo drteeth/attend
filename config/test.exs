@@ -28,6 +28,8 @@ config :eventstore, EventStore.Storage,
   hostname: "localhost",
   pool_size: 1
 
+config :attend, Attend.Email.Mailer, adapter: Bamboo.TestAdapter
+
 if File.exists?("config/test.secret.exs") do
   import_config "test.secret.exs"
 end

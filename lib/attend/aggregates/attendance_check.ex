@@ -1,24 +1,47 @@
 defmodule Attend.Aggregates.AttendanceCheck do
-  defstruct [:check_id, status: :initialized]
+  defstruct [:player_check_id, :check_id, tokens: %{}]
 
-  alias __MODULE__, as: Check
-  alias Attend.Commands.AskPlayerForAttendance
-  alias Attend.Events.PlayerAskedForAttendance
+  # TODO reason/message
 
-  def execute(%Check{}, %AskPlayerForAttendance{} = command) do
+  alias __MODULE__
+  alias Attend.Commands.{AskPlayerForAttendance, ConfirmAttendance}
+  alias Attend.Events.{PlayerAskedForAttendance, PlayerConfirmedAttendance}
+
+  def execute(%AttendanceCheck{player_check_id: nil}, %AskPlayerForAttendance{} = command) do
     %PlayerAskedForAttendance{
       player_check_id: command.player_check_id,
       check_id: command.check_id,
       game_id: command.game_id,
-      team_id: command.team_id,
+      team: command.team,
       player: command.player,
-      yes_token: command.yes_token,
-      no_token: command.no_token,
-      maybe_token: command.maybe_token
     }
   end
 
-  def apply(%Check{}, %PlayerAskedForAttendance{} = event) do
-    %Check{check_id: event.player_check_id, status: :started}
+  def execute(%AttendanceCheck{} = check, %ConfirmAttendance{} = command) do
+    response = check.tokens[command.response_token_id]
+
+    %PlayerConfirmedAttendance{
+      player_check_id: command.player_check_id,
+      check_id: check.check_id,
+      response_token_id: command.response_token_id,
+      response: response
+    }
+  end
+
+  def apply(%AttendanceCheck{} = check, %PlayerAskedForAttendance{} = event) do
+    %{
+      check
+      | player_check_id: event.player_check_id,
+        check_id: event.check_id,
+        tokens: %{
+          event.yes_token => :yes,
+          event.no_token => :no,
+          event.maybe_token => :maybe
+        }
+    }
+  end
+
+  def apply(%AttendanceCheck{} = check, %PlayerConfirmedAttendance{} = _event) do
+    check
   end
 end

@@ -14,7 +14,6 @@ defmodule AttendWeb.TeamController do
 
   def show(conn, params) do
     # TODO get the ID from the params
-    IO.inspect(params)
     # TODO preload the team?
     live_render(conn, Team.Form, session: %{team_id: "FakeTeam"})
   end

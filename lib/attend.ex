@@ -7,7 +7,8 @@ defmodule Attend do
     SchedulePickupGame,
     AddPlayerToTeam,
     RegisterTeam,
-    CheckAttendance
+    CheckAttendance,
+    ConfirmAttendance
   }
 
   def register_team(name, id \\ nil) do
@@ -76,6 +77,21 @@ defmodule Attend do
     case CommandRouter.dispatch(cmd) do
       :ok ->
         {:ok, check_id}
+
+      error ->
+        error
+    end
+  end
+
+  def confirm_attendance(player_check_id, token) do
+    cmd = %ConfirmAttendance{
+      player_check_id: player_check_id,
+      response_token_id: token
+    }
+
+    case CommandRouter.dispatch(cmd) do
+      :ok ->
+        {:ok, player_check_id}
 
       error ->
         error
