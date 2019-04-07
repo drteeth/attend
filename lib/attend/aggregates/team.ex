@@ -2,7 +2,7 @@ defmodule Attend.Aggregates.Team do
   defstruct team_id: nil, name: nil, players: [], checks: []
 
   alias __MODULE__, as: Team
-  alias Attend.Commands.{RegisterTeam, AddPlayerToTeam, CheckAttendance}
+  alias Attend.Commands.{RegisterTeam, JoinTeam, CheckAttendance}
   alias Attend.Events.{TeamRegistered, PlayerAddedToTeam, AttendanceCheckStarted}
 
   def execute(%Team{}, %RegisterTeam{team_id: id, name: name}) do
@@ -10,7 +10,7 @@ defmodule Attend.Aggregates.Team do
     %TeamRegistered{team_id: id, name: name}
   end
 
-  def execute(%Team{}, %AddPlayerToTeam{team_id: id, player: player}) do
+  def execute(%Team{}, %JoinTeam{team_id: id, player: player}) do
     # TODO don't assign ID here.
     player = Map.put(player, :id, Ecto.UUID.generate())
     %PlayerAddedToTeam{team_id: id, player: player}

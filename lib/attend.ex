@@ -5,7 +5,7 @@ defmodule Attend do
 
   alias Attend.Commands.{
     SchedulePickupGame,
-    AddPlayerToTeam,
+    JoinTeam,
     RegisterTeam,
     CheckAttendance,
     ConfirmAttendance
@@ -29,7 +29,7 @@ defmodule Attend do
   end
 
   def add_player_to_team(team_id, name, email) do
-    cmd = %AddPlayerToTeam{
+    cmd = %JoinTeam{
       team_id: team_id,
       player: %{
         name: name,

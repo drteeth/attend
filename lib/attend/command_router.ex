@@ -4,7 +4,7 @@ defmodule Attend.CommandRouter do
   alias Attend.Commands.{
     RegisterTeam,
     CheckAttendance,
-    AddPlayerToTeam,
+    JoinTeam,
     SchedulePickupGame,
     AskPlayerForAttendance,
     ConfirmAttendance
@@ -16,7 +16,7 @@ defmodule Attend.CommandRouter do
     AttendanceCheck
   }
 
-  dispatch([RegisterTeam, AddPlayerToTeam, CheckAttendance], to: Team, identity: :team_id)
+  dispatch([RegisterTeam, JoinTeam, CheckAttendance], to: Team, identity: :team_id)
 
   dispatch(SchedulePickupGame, to: Game, identity: :game_id)
 
