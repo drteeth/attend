@@ -10,8 +10,8 @@ defmodule AttendTest do
     {:ok, _player_id} = Attend.add_player_to_team(team_id, "Alice", "alice@example.com")
     {:ok, _player_id} = Attend.add_player_to_team(team_id, "Bob", "bob@example.com")
 
-    {:ok, game_id} =
-      Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", ~N[2019-12-12 21:30:00])
+    game_time = DateTime.from_naive!(~N[2018-12-12 21:30:00], "Etc/UTC")
+    {:ok, game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", game_time)
 
     {:ok, _check_id} = Attend.check_attendance(game_id, team_id)
 
@@ -35,6 +35,8 @@ defmodule AttendTest do
 
     {:ok, _} = Attend.confirm_attendance(player_check_id, yes_token, "I'll be 10 minutes late")
 
+    :ok = Attend.start_game(game_id)
+
     # TODO Start the game and close the attendance check
     # TODO End the game
     # TODO Schedule the start and end of the game when the game is created
@@ -46,5 +48,4 @@ defmodule AttendTest do
     assert_receive({:delivered_email, email}, 100, Bamboo.Test.flunk_no_emails_received())
     email
   end
-
 end

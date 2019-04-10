@@ -8,18 +8,19 @@ defmodule Attend do
     JoinTeam,
     RegisterTeam,
     CheckAttendance,
-    ConfirmAttendance
+    ConfirmAttendance,
+    StartGame
   }
 
   def register_team(name, id \\ nil) do
     team_id = id || UUID.generate()
 
-    cmd = %RegisterTeam{
+    command = %RegisterTeam{
       team_id: team_id,
       name: name
     }
 
-    case CommandRouter.dispatch(cmd) do
+    case CommandRouter.dispatch(command) do
       :ok ->
         {:ok, team_id}
 
@@ -29,7 +30,7 @@ defmodule Attend do
   end
 
   def add_player_to_team(team_id, name, email) do
-    cmd = %JoinTeam{
+    command = %JoinTeam{
       team_id: team_id,
       player: %{
         name: name,
@@ -37,7 +38,7 @@ defmodule Attend do
       }
     }
 
-    case CommandRouter.dispatch(cmd, include_execution_result: true) do
+    case CommandRouter.dispatch(command, include_execution_result: true) do
       {:ok, %{events: [player: %{id: player_id}]}} ->
         {:ok, player_id}
 
@@ -49,14 +50,14 @@ defmodule Attend do
   def schedule_pickup_game(team_id, location, start_time) do
     game_id = UUID.generate()
 
-    cmd = %SchedulePickupGame{
+    command = %SchedulePickupGame{
       game_id: game_id,
       team_id: team_id,
       location: location,
       start_time: start_time
     }
 
-    case CommandRouter.dispatch(cmd) do
+    case CommandRouter.dispatch(command) do
       :ok ->
         {:ok, game_id}
 
@@ -68,13 +69,13 @@ defmodule Attend do
   def check_attendance(game_id, team_id) do
     check_id = UUID.generate()
 
-    cmd = %CheckAttendance{
+    command = %CheckAttendance{
       check_id: check_id,
       game_id: game_id,
       team_id: team_id
     }
 
-    case CommandRouter.dispatch(cmd) do
+    case CommandRouter.dispatch(command) do
       :ok ->
         {:ok, check_id}
 
@@ -84,18 +85,23 @@ defmodule Attend do
   end
 
   def confirm_attendance(player_check_id, token, message) do
-    cmd = %ConfirmAttendance{
+    command = %ConfirmAttendance{
       player_check_id: player_check_id,
       response_token_id: token,
       message: message
     }
 
-    case CommandRouter.dispatch(cmd) do
+    case CommandRouter.dispatch(command) do
       :ok ->
         {:ok, player_check_id}
 
       error ->
         error
     end
+  end
+
+  def start_game(game_id) do
+    command = %StartGame{game_id: game_id}
+    CommandRouter.dispatch(command)
   end
 end
