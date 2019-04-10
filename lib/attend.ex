@@ -83,10 +83,11 @@ defmodule Attend do
     end
   end
 
-  def confirm_attendance(player_check_id, token) do
+  def confirm_attendance(player_check_id, token, message) do
     cmd = %ConfirmAttendance{
       player_check_id: player_check_id,
-      response_token_id: token
+      response_token_id: token,
+      message: message
     }
 
     case CommandRouter.dispatch(cmd) do

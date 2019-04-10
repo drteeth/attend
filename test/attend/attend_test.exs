@@ -33,8 +33,7 @@ defmodule AttendTest do
     player_check_id = captures["player_check"]
     yes_token = captures["token"]
 
-    # TODO add reason
-    {:ok, _} = Attend.confirm_attendance(player_check_id, yes_token)
+    {:ok, _} = Attend.confirm_attendance(player_check_id, yes_token, "I'll be 10 minutes late")
 
     # TODO Start the game and close the attendance check
     # TODO End the game

@@ -1,8 +1,6 @@
 defmodule Attend.Aggregates.AttendanceCheck do
   defstruct [:player_check_id, :check_id, tokens: %{}]
 
-  # TODO reason/message
-
   alias __MODULE__
   alias Attend.Commands.{RequestAttendance, ConfirmAttendance}
   alias Attend.Events.{AttendanceRequested, AttendanceConfirmed}
@@ -24,7 +22,8 @@ defmodule Attend.Aggregates.AttendanceCheck do
       player_check_id: command.player_check_id,
       check_id: check.check_id,
       response_token_id: command.response_token_id,
-      response: response
+      response: response,
+      message: command.message
     }
   end
 
