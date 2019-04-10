@@ -21,7 +21,7 @@ defmodule Attend.Email do
 
     # TODO: Use eex template to render the email bodies
     new_email(
-      to: player.email,
+      to: {player.name, player.email},
       from: "reminder@example.com",
       subject: "Are you coming?",
       text_body: """

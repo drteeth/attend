@@ -38,7 +38,7 @@ defmodule Attend.Aggregates.Team do
   end
 
   def apply(%Team{} = team, %JoinedTeam{player: player}) do
-    players = [player | team.players]
+    players = team.players ++ [player]
     %{team | players: players}
   end
 

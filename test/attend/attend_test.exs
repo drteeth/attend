@@ -17,19 +17,35 @@ defmodule AttendTest do
 
     wait_for_event(Events.AttendanceRequested)
 
-    assert_receive({:delivered_email, email}, 100, Bamboo.Test.flunk_no_emails_received())
+    alice_email = last_delivered_email()
+    bob_email = last_delivered_email()
 
-    assert email.from == {nil, "reminder@example.com"}
-    assert email.subject == "Are you coming?"
+    assert alice_email.to == [{"Alice", "alice@example.com"}]
+    assert alice_email.from == {nil, "reminder@example.com"}
+    assert alice_email.subject == "Are you coming?"
+
+    assert bob_email.to == [{"Bob", "bob@example.com"}]
+    assert bob_email.from == {nil, "reminder@example.com"}
+    assert bob_email.subject == "Are you coming?"
 
     pattern = ~r{Yes: http.+attendance/(?<player_check>[a-z-\d]+).+token=(?<token>[a-z-\d]+)}
-    captures = Regex.named_captures(pattern, email.text_body)
+    captures = Regex.named_captures(pattern, alice_email.text_body)
     player_check_id = captures["player_check"]
     yes_token = captures["token"]
 
     # TODO add reason
     {:ok, _} = Attend.confirm_attendance(player_check_id, yes_token)
 
-    :timer.sleep(1000)
+    # TODO Start the game and close the attendance check
+    # TODO End the game
+    # TODO Schedule the start and end of the game when the game is created
+    # TODO Cancel the game (and the scheduled timer)
+    # -> Cancel any running checks - Don't run checks on cancelled games (UH OH)
   end
+
+  defp last_delivered_email() do
+    assert_receive({:delivered_email, email}, 100, Bamboo.Test.flunk_no_emails_received())
+    email
+  end
+
 end
