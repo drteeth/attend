@@ -1,9 +1,9 @@
 defmodule Attend.Aggregates.AttendanceCheck do
-  defstruct [:player_check_id, :check_id, tokens: %{}]
+  defstruct [:player_check_id, :status, :check_id, tokens: %{}]
 
   alias __MODULE__
-  alias Attend.Commands.{RequestAttendance, ConfirmAttendance}
-  alias Attend.Events.{AttendanceRequested, AttendanceConfirmed}
+  alias Attend.Commands.{RequestAttendance, ConfirmAttendance, CloseAttendanceCheck}
+  alias Attend.Events.{AttendanceRequested, AttendanceConfirmed, AttendanceCheckClosed}
 
   def execute(%AttendanceCheck{player_check_id: nil}, %RequestAttendance{} = command) do
     %AttendanceRequested{
@@ -18,12 +18,23 @@ defmodule Attend.Aggregates.AttendanceCheck do
   def execute(%AttendanceCheck{} = check, %ConfirmAttendance{} = command) do
     response = check.tokens[command.response_token_id]
 
-    %AttendanceConfirmed{
-      player_check_id: command.player_check_id,
-      check_id: check.check_id,
-      response_token_id: command.response_token_id,
-      response: response,
-      message: command.message
+    if(check.status != :closed) do
+      %AttendanceConfirmed{
+        player_check_id: command.player_check_id,
+        check_id: check.check_id,
+        response_token_id: command.response_token_id,
+        response: response,
+        message: command.message
+      }
+    else
+      {:error, :check_closed}
+    end
+  end
+
+  def execute(%AttendanceCheck{} = check, %CloseAttendanceCheck{}) do
+    %AttendanceCheckClosed{
+      player_check_id: check.player_check_id,
+      check_id: check.check_id
     }
   end
 
@@ -31,6 +42,7 @@ defmodule Attend.Aggregates.AttendanceCheck do
     %{
       check
       | player_check_id: event.player_check_id,
+        status: :started,
         check_id: event.check_id,
         tokens: %{
           event.yes_token => :yes,
@@ -40,7 +52,11 @@ defmodule Attend.Aggregates.AttendanceCheck do
     }
   end
 
-  def apply(%AttendanceCheck{} = check, %AttendanceConfirmed{} = _event) do
-    check
+  def apply(%AttendanceCheck{} = check, %AttendanceConfirmed{}) do
+    %{check | status: :confirmed}
+  end
+
+  def apply(%AttendanceCheck{} = check, %AttendanceCheckClosed{}) do
+    %{check | status: :closed}
   end
 end

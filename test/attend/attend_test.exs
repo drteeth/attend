@@ -28,25 +28,38 @@ defmodule AttendTest do
     assert bob_email.from == {nil, "reminder@example.com"}
     assert bob_email.subject == "Are you coming?"
 
-    pattern = ~r{Yes: http.+attendance/(?<player_check>[a-z-\d]+).+token=(?<token>[a-z-\d]+)}
-    captures = Regex.named_captures(pattern, alice_email.text_body)
-    player_check_id = captures["player_check"]
-    yes_token = captures["token"]
-
+    {player_check_id, yes_token} = parse_player_check_id_and_token(alice_email, "Yes")
     {:ok, _} = Attend.confirm_attendance(player_check_id, yes_token, "I'll be 10 minutes late")
 
     :ok = Attend.start_game(game_id)
 
     :ok = Attend.end_game(game_id)
 
-    # TODO End the game and close the attendance check
-    # TODO Schedule the start and end of the game when the game is created
+    wait_for_event(Events.AttendanceCheckClosed)
+
+    # confirming attendance does not work after the game has ended
+    {player_check_id, no_token} = parse_player_check_id_and_token(bob_email, "No")
+    {:error, _} = Attend.confirm_attendance(player_check_id, no_token, "I'll be 10 minutes late")
+
     # TODO Cancel the game (and the scheduled timer)
     # -> Cancel any running checks - Don't run checks on cancelled games (UH OH)
+    # TODO Schedule the start and end of the game when the game is created
+
+    :timer.sleep(500)
   end
 
   defp last_delivered_email() do
     assert_receive({:delivered_email, email}, 100, Bamboo.Test.flunk_no_emails_received())
     email
+  end
+
+  defp parse_player_check_id_and_token(email, answer) do
+    pattern =
+      ~r{#{answer}: http.+attendance/(?<player_check>[a-z-\d]+).+token=(?<token>[a-z-\d]+)}
+
+    captures = Regex.named_captures(pattern, email.text_body)
+    player_check_id = captures["player_check"]
+    yes_token = captures["token"]
+    {player_check_id, yes_token}
   end
 end
