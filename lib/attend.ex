@@ -9,7 +9,8 @@ defmodule Attend do
     RegisterTeam,
     CheckAttendance,
     ConfirmAttendance,
-    StartGame
+    StartGame,
+    EndGame
   }
 
   def register_team(name, id \\ nil) do
@@ -102,6 +103,11 @@ defmodule Attend do
 
   def start_game(game_id) do
     command = %StartGame{game_id: game_id}
+    CommandRouter.dispatch(command)
+  end
+
+  def end_game(game_id) do
+    command = %EndGame{game_id: game_id}
     CommandRouter.dispatch(command)
   end
 end

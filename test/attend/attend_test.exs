@@ -37,8 +37,9 @@ defmodule AttendTest do
 
     :ok = Attend.start_game(game_id)
 
-    # TODO Start the game and close the attendance check
-    # TODO End the game
+    :ok = Attend.end_game(game_id)
+
+    # TODO End the game and close the attendance check
     # TODO Schedule the start and end of the game when the game is created
     # TODO Cancel the game (and the scheduled timer)
     # -> Cancel any running checks - Don't run checks on cancelled games (UH OH)

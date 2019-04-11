@@ -2,8 +2,8 @@ defmodule Attend.Aggregates.Game do
   defstruct [:game_id, :location, :team_id, :start_time, :status]
 
   alias __MODULE__, as: Game
-  alias Attend.Commands.{SchedulePickupGame, StartGame}
-  alias Attend.Events.{GameScheduled, GameStarted}
+  alias Attend.Commands.{SchedulePickupGame, StartGame, EndGame}
+  alias Attend.Events.{GameScheduled, GameStarted, GameEnded}
 
   def execute(%Game{game_id: nil}, %SchedulePickupGame{} = command) do
     %GameScheduled{
@@ -30,6 +30,12 @@ defmodule Attend.Aggregates.Game do
     end
   end
 
+  def execute(%Game{} = game, %EndGame{}) do
+    if game.status != :ended do
+      %GameEnded{game_id: game.game_id}
+    end
+  end
+
   def apply(%Game{}, %GameScheduled{} = event) do
     %Game{
       game_id: event.game_id,
@@ -40,7 +46,11 @@ defmodule Attend.Aggregates.Game do
     }
   end
 
-  def apply(%Game{} = game, %GameStarted{} = _event) do
+  def apply(%Game{} = game, %GameStarted{}) do
     %{game | status: :started}
+  end
+
+  def apply(%Game{} = game, %GameEnded{}) do
+    %{game | status: :ended}
   end
 end
