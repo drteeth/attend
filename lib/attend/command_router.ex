@@ -9,6 +9,7 @@ defmodule Attend.CommandRouter do
     RequestAttendance,
     ConfirmAttendance,
     StartGame,
+    CancelGame,
     EndGame,
     CloseAttendanceCheck
   }
@@ -19,11 +20,33 @@ defmodule Attend.CommandRouter do
     AttendanceCheck
   }
 
-  dispatch([RegisterTeam, JoinTeam, CheckAttendance], to: Team, identity: :team_id)
+  dispatch(
+    [
+      RegisterTeam,
+      JoinTeam,
+      CheckAttendance
+    ],
+    to: Team,
+    identity: :team_id
+  )
 
-  dispatch([SchedulePickupGame, StartGame, EndGame], to: Game, identity: :game_id)
+  dispatch(
+    [
+      SchedulePickupGame,
+      StartGame,
+      CancelGame,
+      EndGame
+    ],
+    to: Game,
+    identity: :game_id
+  )
 
-  dispatch([RequestAttendance, ConfirmAttendance, CloseAttendanceCheck],
+  dispatch(
+    [
+      RequestAttendance,
+      ConfirmAttendance,
+      CloseAttendanceCheck
+    ],
     to: AttendanceCheck,
     identity: :player_check_id
   )

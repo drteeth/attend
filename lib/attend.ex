@@ -10,6 +10,7 @@ defmodule Attend do
     CheckAttendance,
     ConfirmAttendance,
     StartGame,
+    CancelGame,
     EndGame
   }
 
@@ -108,6 +109,11 @@ defmodule Attend do
 
   def end_game(game_id) do
     command = %EndGame{game_id: game_id}
+    CommandRouter.dispatch(command)
+  end
+
+  def cancel_game(game_id) do
+    command = %CancelGame{game_id: game_id}
     CommandRouter.dispatch(command)
   end
 end

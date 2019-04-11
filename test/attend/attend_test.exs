@@ -41,11 +41,20 @@ defmodule AttendTest do
     {player_check_id, no_token} = parse_player_check_id_and_token(bob_email, "No")
     {:error, _} = Attend.confirm_attendance(player_check_id, no_token, "I'll be 10 minutes late")
 
-    # TODO Cancel the game (and the scheduled timer)
-    # -> Cancel any running checks - Don't run checks on cancelled games (UH OH)
-    # TODO Schedule the start and end of the game when the game is created
+    game_time = DateTime.from_naive!(~N[2018-12-13 21:30:00], "Etc/UTC")
+    {:ok, second_game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", game_time)
 
-    :timer.sleep(500)
+    :ok = Attend.cancel_game(second_game_id)
+    {:ok, _check_id} = Attend.check_attendance(second_game_id, team_id)
+    wait_for_event(Events.GameCancelled)
+    wait_for_event(Events.AttendanceCheckClosed)
+
+    # confirming attendance does not work after the game has been cancelled
+    {player_check_id, no_token} = parse_player_check_id_and_token(bob_email, "No")
+    {:error, _} = Attend.confirm_attendance(player_check_id, no_token, "I'll be 10 minutes late")
+
+    # TODO Don't run checks on cancelled games (UH OH)
+    # TODO Schedule the start and end of the game when the game is created
   end
 
   defp last_delivered_email() do

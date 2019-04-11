@@ -2,8 +2,20 @@ defmodule Attend.Aggregates.Game do
   defstruct [:game_id, :location, :team_id, :start_time, :status]
 
   alias __MODULE__, as: Game
-  alias Attend.Commands.{SchedulePickupGame, StartGame, EndGame}
-  alias Attend.Events.{GameScheduled, GameStarted, GameEnded}
+
+  alias Attend.Commands.{
+    SchedulePickupGame,
+    StartGame,
+    CancelGame,
+    EndGame
+  }
+
+  alias Attend.Events.{
+    GameScheduled,
+    GameStarted,
+    GameCancelled,
+    GameEnded
+  }
 
   def execute(%Game{game_id: nil}, %SchedulePickupGame{} = command) do
     %GameScheduled{
@@ -17,21 +29,38 @@ defmodule Attend.Aggregates.Game do
   def execute(%Game{} = game, %StartGame{}) do
     now = DateTime.utc_now()
 
-    if DateTime.compare(game.start_time, now) == :lt do
-      %GameStarted{
-        game_id: game.game_id,
-        location: game.location,
-        team_id: game.team_id,
-        start_time: game.start_time,
-        started_at: now
-      }
-    else
-      {:error, :cant_start_game_before_start_time}
+    cond do
+      game.status == :cancelled ->
+        {:error, :game_cancelled}
+
+      game.status == :ended ->
+        {:error, :game_already_ended}
+
+      game.status == :started ->
+        {:error, :game_already_started}
+
+      DateTime.compare(now, game.start_time) == :lt ->
+        {:error, :cant_start_game_before_start_time}
+
+      game.status == :scheduled ->
+        %GameStarted{
+          game_id: game.game_id,
+          location: game.location,
+          team_id: game.team_id,
+          start_time: game.start_time,
+          started_at: now
+        }
+    end
+  end
+
+  def execute(%Game{} = game, %CancelGame{}) do
+    if game.status != :ended do
+      %GameCancelled{game_id: game.game_id}
     end
   end
 
   def execute(%Game{} = game, %EndGame{}) do
-    if game.status != :ended do
+    if game.status == :started do
       %GameEnded{game_id: game.game_id}
     end
   end
@@ -52,5 +81,9 @@ defmodule Attend.Aggregates.Game do
 
   def apply(%Game{} = game, %GameEnded{}) do
     %{game | status: :ended}
+  end
+
+  def apply(%Game{} = game, %GameCancelled{}) do
+    %{game | status: :cancelled}
   end
 end
