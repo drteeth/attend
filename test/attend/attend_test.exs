@@ -54,7 +54,29 @@ defmodule AttendTest do
     {:error, _} = Attend.confirm_attendance(player_check_id, no_token, "I'll be 10 minutes late")
 
     # TODO Don't run checks on cancelled games (UH OH)
+    # A) start/cancel/end are strongly consistent and create a projection
+    #    - then we can read from it when dispatching commands against team
+
+    # B) team add_player is sync and create a roster projection
+    #  - allows us to move attendance check to game
+    #  - allows checking game state before starting a check
+    #  - enables having more than 1 game type
+    #      (check PM keyed on game_id, can now key on check_id)
+
+    # C) Game Agg handles the CheckAttendance Command
+    #    Validates that the team is part of the game and that the game is in good state
+    #    Game Emits AttenanceCheckStarted(game_id, team_id, etc)
+    #    Process Manager Listens on check_id and DoTeamCheck to Team
+    #    Team Emits TeamCheckStarted(game, check, team, players)
+    #    Process Manager Listens on check_id and Sends RequestAttend to AttendanceCheck
+    #    PM Can listen for game end/cancel
+
+
+
+    # NO sync state.
+
     # TODO Schedule the start and end of the game when the game is created
+    # TODO Support PickupGames(1 team) and HeadToHeadGames(2 teams)
   end
 
   defp last_delivered_email() do
