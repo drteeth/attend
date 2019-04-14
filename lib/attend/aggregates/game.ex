@@ -69,6 +69,9 @@ defmodule Attend.Aggregates.Game do
       game.status == :ended ->
         {:error, :game_already_ended}
 
+      game.team_id != command.team_id ->
+        {:error, :team_not_scheduled_for_game}
+
       true ->
         %AttendanceCheckStarted{
           check_id: command.check_id,

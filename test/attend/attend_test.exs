@@ -64,9 +64,18 @@ defmodule AttendTest do
     wait_for_event(Events.AttendanceCheckClosed)
   end
 
-  test "Can't check attendan on a game that has ended" do
+  test "Can't check attendance on a team that is not scheduled in a game" do
+    # Given a registered team, scheduled for a game
     {:ok, team_id} = Attend.register_team("The Noodles")
+    {:ok, game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", @game_time)
 
+    # When an attendance check is attempted, it fails.
+    fake_team = Ecto.UUID.generate()
+    {:error, :team_not_scheduled_for_game} = Attend.check_attendance(game_id, fake_team)
+  end
+
+  test "Can't check attendance on a game that has ended" do
+    {:ok, team_id} = Attend.register_team("The Noodles")
     {:ok, game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", @game_time)
 
     :ok = Attend.start_game(game_id)
