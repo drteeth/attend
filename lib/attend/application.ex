@@ -15,7 +15,8 @@ defmodule Attend.Application do
       # Starts a worker by calling: Attend.Worker.start_link(arg)
       # {Attend.Worker, arg},
       Attend.ProcessManagers.AttendanceCheckManager,
-      Attend.EventHandlers.AtendanceCheckEmailer
+      Attend.EventHandlers.AtendanceCheckEmailer,
+      Attend.EventHandlers.ChannelNotifier
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

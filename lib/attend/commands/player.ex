@@ -11,6 +11,6 @@ defmodule Attend.Models.Player do
   def changeset(player, attrs) do
     player
     |> cast(attrs, [:id, :name, :email])
-    |> validate_required([:id, :name, :email])
+    |> validate_required([:name, :email])
   end
 end

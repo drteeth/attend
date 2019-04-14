@@ -2,6 +2,7 @@ defmodule AttendWeb.Team.Form do
   use Phoenix.LiveView
 
   alias Attend.Models.{Player, Team}
+  alias AttendWeb.Endpoint
 
   @impl true
   def mount(%{team_id: team_id}, socket) do
@@ -21,13 +22,11 @@ defmodule AttendWeb.Team.Form do
         new_player: player
       )
 
-    case EventStore.subscribe(team_id, mapper: fn e -> e.data end) do
-      :ok ->
-        {:ok, socket}
-
-      {:error, reason} ->
-        {:error, reason}
+    if(connected?(socket)) do
+      Endpoint.subscribe("teams")
     end
+
+    {:ok, socket}
   end
 
   @impl true
@@ -73,12 +72,7 @@ defmodule AttendWeb.Team.Form do
     end
   end
 
-  def handle_info({:events, events}, socket) do
-    team =
-      Enum.reduce(events, socket.assigns.team, fn e, t ->
-        Attend.Aggregates.Team.apply(t, e)
-      end)
-
+  def handle_info(%{topic: "teams", payload: team, event: _event}, socket) do
     {:noreply, assign(socket, team: team)}
   end
 end

@@ -9,7 +9,7 @@ defmodule AttendWeb.TeamController do
   end
 
   def new(conn, _params) do
-    live_render(conn, Team.Form, session: %{team_id: "FakeTeam"})
+    live_render(conn, Team.Form, session: %{team_id: Ecto.UUID.generate()})
   end
 
   def show(conn, _params) do
