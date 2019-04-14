@@ -1,18 +1,7 @@
 defmodule Attend.CommandRouter do
   use Commanded.Commands.Router
 
-  alias Attend.Commands.{
-    RegisterTeam,
-    CheckAttendance,
-    JoinTeam,
-    SchedulePickupGame,
-    RequestAttendance,
-    ConfirmAttendance,
-    StartGame,
-    CancelGame,
-    EndGame,
-    CloseAttendanceCheck
-  }
+  alias Attend.Commands
 
   alias Attend.Aggregates.{
     Team,
@@ -22,9 +11,9 @@ defmodule Attend.CommandRouter do
 
   dispatch(
     [
-      RegisterTeam,
-      JoinTeam,
-      CheckAttendance
+      Commands.RegisterTeam,
+      Commands.JoinTeam,
+      Commands.RequestTeamAttendance
     ],
     to: Team,
     identity: :team_id
@@ -32,10 +21,11 @@ defmodule Attend.CommandRouter do
 
   dispatch(
     [
-      SchedulePickupGame,
-      StartGame,
-      CancelGame,
-      EndGame
+      Commands.SchedulePickupGame,
+      Commands.CheckAttendance,
+      Commands.StartGame,
+      Commands.CancelGame,
+      Commands.EndGame
     ],
     to: Game,
     identity: :game_id
@@ -43,9 +33,9 @@ defmodule Attend.CommandRouter do
 
   dispatch(
     [
-      RequestAttendance,
-      ConfirmAttendance,
-      CloseAttendanceCheck
+      Commands.RequestAttendance,
+      Commands.ConfirmAttendance,
+      Commands.CloseAttendanceCheck
     ],
     to: AttendanceCheck,
     identity: :player_check_id

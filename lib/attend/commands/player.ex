@@ -3,8 +3,7 @@ defmodule Attend.Models.Player do
   import Ecto.Changeset
 
   embedded_schema do
-    # TODO UUID..
-    field :name, :string
+    field :name, :binary_id
     field :email, :string
   end
 

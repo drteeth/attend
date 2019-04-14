@@ -3,8 +3,7 @@ defmodule Attend.Models.Team do
   import Ecto.Changeset
 
   embedded_schema do
-    # TODO UUID..
-    field :team_id, :string
+    field :team_id, :binary_id
     field :name, :string
 
     embeds_many :players, Attend.Player

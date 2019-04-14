@@ -4,14 +4,19 @@ defmodule AttendTest do
 
   alias Attend.Events
 
-  test "" do
+  # TODO: CompleteAttendanceCheck, FailAttendanceCheck
+  # TODO Schedule the start and end of the game when the game is created
+  # TODO Support PickupGames(1 team) and HeadToHeadGames(2 teams)
+
+  @game_time DateTime.from_naive!(~N[2018-12-13 21:30:00], "Etc/UTC")
+
+  test "A typical session" do
     {:ok, team_id} = Attend.register_team("The Noodles")
 
     {:ok, _player_id} = Attend.add_player_to_team(team_id, "Alice", "alice@example.com")
     {:ok, _player_id} = Attend.add_player_to_team(team_id, "Bob", "bob@example.com")
 
-    game_time = DateTime.from_naive!(~N[2018-12-12 21:30:00], "Etc/UTC")
-    {:ok, game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", game_time)
+    {:ok, game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", @game_time)
 
     {:ok, _check_id} = Attend.check_attendance(game_id, team_id)
 
@@ -40,43 +45,42 @@ defmodule AttendTest do
     # confirming attendance does not work after the game has ended
     {player_check_id, no_token} = parse_player_check_id_and_token(bob_email, "No")
     {:error, _} = Attend.confirm_attendance(player_check_id, no_token, "I'll be 10 minutes late")
+  end
 
-    game_time = DateTime.from_naive!(~N[2018-12-13 21:30:00], "Etc/UTC")
-    {:ok, second_game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", game_time)
+  test "Cancelling a game closes attendance checks" do
+    {:ok, team_id} = Attend.register_team("The Noodles")
 
-    :ok = Attend.cancel_game(second_game_id)
-    {:ok, _check_id} = Attend.check_attendance(second_game_id, team_id)
-    wait_for_event(Events.GameCancelled)
+    {:ok, _player_id} = Attend.add_player_to_team(team_id, "Alice", "alice@example.com")
+    {:ok, _player_id} = Attend.add_player_to_team(team_id, "Bob", "bob@example.com")
+
+    {:ok, game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", @game_time)
+
+    {:ok, _check_id} = Attend.check_attendance(game_id, team_id)
+
+    wait_for_event(Events.AttendanceRequested)
+
+    :ok = Attend.cancel_game(game_id)
+
     wait_for_event(Events.AttendanceCheckClosed)
+  end
 
-    # confirming attendance does not work after the game has been cancelled
-    {player_check_id, no_token} = parse_player_check_id_and_token(bob_email, "No")
-    {:error, _} = Attend.confirm_attendance(player_check_id, no_token, "I'll be 10 minutes late")
+  test "Can't check attendan on a game that has ended" do
+    {:ok, team_id} = Attend.register_team("The Noodles")
 
-    # TODO Don't run checks on cancelled games (UH OH)
-    # A) start/cancel/end are strongly consistent and create a projection
-    #    - then we can read from it when dispatching commands against team
+    {:ok, game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", @game_time)
 
-    # B) team add_player is sync and create a roster projection
-    #  - allows us to move attendance check to game
-    #  - allows checking game state before starting a check
-    #  - enables having more than 1 game type
-    #      (check PM keyed on game_id, can now key on check_id)
+    :ok = Attend.start_game(game_id)
+    :ok = Attend.end_game(game_id)
+    {:error, :game_already_ended} = Attend.check_attendance(game_id, team_id)
+  end
 
-    # C) Game Agg handles the CheckAttendance Command
-    #    Validates that the team is part of the game and that the game is in good state
-    #    Game Emits AttenanceCheckStarted(game_id, team_id, etc)
-    #    Process Manager Listens on check_id and DoTeamCheck to Team
-    #    Team Emits TeamCheckStarted(game, check, team, players)
-    #    Process Manager Listens on check_id and Sends RequestAttend to AttendanceCheck
-    #    PM Can listen for game end/cancel
+  test "Can't check attendance on a cancelled game" do
+    {:ok, team_id} = Attend.register_team("The Noodles")
 
+    {:ok, game_id} = Attend.schedule_pickup_game(team_id, "Monarch Park - Field 4", @game_time)
 
-
-    # NO sync state.
-
-    # TODO Schedule the start and end of the game when the game is created
-    # TODO Support PickupGames(1 team) and HeadToHeadGames(2 teams)
+    :ok = Attend.cancel_game(game_id)
+    {:error, :game_cancelled} = Attend.check_attendance(game_id, team_id)
   end
 
   defp last_delivered_email() do

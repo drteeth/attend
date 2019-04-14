@@ -8,12 +8,21 @@ defmodule Attend.ProcessManagers.AttendanceCheckManager do
 
   alias __MODULE__, as: State
 
-  alias Attend.Events.{AttendanceCheckStarted, GameCancelled, GameEnded}
-  alias Attend.Commands.{RequestAttendance, CloseAttendanceCheck}
+  alias Attend.Events.{
+    AttendanceCheckStarted,
+    TeamAttendanceCheckStarted,
+    GameCancelled,
+    GameEnded
+  }
 
-  def interested?(%AttendanceCheckStarted{} = event) do
-    {:start, event.game_id}
-  end
+  alias Attend.Commands.{
+    RequestTeamAttendance,
+    RequestAttendance,
+    CloseAttendanceCheck
+  }
+
+  def interested?(%AttendanceCheckStarted{} = event), do: {:start, event.game_id}
+  def interested?(%TeamAttendanceCheckStarted{} = event), do: {:continue, event.game_id}
 
   def interested?(%GameEnded{} = event) do
     {:continue, event.game_id}
@@ -26,6 +35,14 @@ defmodule Attend.ProcessManagers.AttendanceCheckManager do
   def interested?, do: false
 
   def handle(%State{} = _state, %AttendanceCheckStarted{} = event) do
+    %RequestTeamAttendance{
+      check_id: event.check_id,
+      game_id: event.game_id,
+      team_id: event.team_id
+    }
+  end
+
+  def handle(%State{} = _state, %TeamAttendanceCheckStarted{} = event) do
     event.players
     |> Enum.map(fn player ->
       %RequestAttendance{
@@ -58,7 +75,7 @@ defmodule Attend.ProcessManagers.AttendanceCheckManager do
     end)
   end
 
-  def apply(%State{} = state, %AttendanceCheckStarted{} = event) do
+  def apply(%State{} = state, %TeamAttendanceCheckStarted{} = event) do
     player_checks =
       event.players
       |> Enum.map(fn player ->
