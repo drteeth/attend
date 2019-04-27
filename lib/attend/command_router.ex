@@ -13,6 +13,7 @@ defmodule Attend.CommandRouter do
     [
       Commands.RegisterTeam,
       Commands.JoinTeam,
+      Commands.LeaveTeam,
       Commands.RequestTeamAttendance
     ],
     to: Team,

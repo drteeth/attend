@@ -40,4 +40,26 @@ defmodule Attend.EventHandlers.TeamProjector do
     Endpoint.broadcast("teams:#{team.id}", "joined_team", payload)
     :ok
   end
+
+  def handle(%Events.LeftTeam{} = event, _metadata) do
+    team = Repo.get!(Projections.Team, event.team_id)
+
+    existing_players =
+      team.players
+      |> Enum.map(&Map.from_struct/1)
+
+    player = Enum.find(existing_players, fn p -> p.id == event.player_id end)
+
+    players = List.delete(existing_players, player)
+
+    team =
+      team
+      |> Projections.Team.changeset(%{players: players})
+      |> Repo.update!()
+
+    payload = Map.from_struct(team)
+    Endpoint.broadcast("teams", "joined_team", payload)
+    Endpoint.broadcast("teams:#{team.id}", "joined_team", payload)
+    :ok
+  end
 end

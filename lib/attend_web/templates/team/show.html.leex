@@ -1,7 +1,10 @@
 <h3><%= @team.name || "Unknown" %></h3>
 <ul>
   <%= for player <- @team.players do %>
-    <li><%= player.name %> &lt;<%= player.email %>&gt;</li>
+    <li>
+      <%= player.name %> &lt;<%= player.email %>&gt;
+      <button phx-click="remove_player" phx-value="<%= player.id %>">x</button>
+    </li>
   <% end %>
 </ul>
 

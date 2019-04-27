@@ -56,6 +56,20 @@ defmodule AttendWeb.Team.Show do
     end
   end
 
+  @impl true
+  def handle_event("remove_player", player_id, socket) do
+    team = socket.assigns.team
+
+    case Attend.remove_player_from_team(team.id, player_id) do
+      :ok ->
+        {:noreply, socket}
+
+      {:error, reason} ->
+        IO.inspect(reason)
+        {:noreply, assign(socket, error: reason)}
+    end
+  end
+
   def handle_info(%{event: "joined_team", payload: team}, socket) do
     {:noreply, assign(socket, team: team)}
   end

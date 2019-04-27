@@ -6,6 +6,7 @@ defmodule Attend do
   alias Attend.Commands.{
     SchedulePickupGame,
     JoinTeam,
+    LeaveTeam,
     RegisterTeam,
     CheckAttendance,
     ConfirmAttendance,
@@ -31,6 +32,7 @@ defmodule Attend do
     end
   end
 
+  @spec add_player_to_team(UUID.t(), String.t(), String.t()) :: {:ok, UUID.id()} | {:error, term}
   def add_player_to_team(team_id, name, email) do
     command = %JoinTeam{
       team_id: team_id,
@@ -48,6 +50,12 @@ defmodule Attend do
       error ->
         error
     end
+  end
+
+  @spec(remove_player_from_team(UUID.t(), UUID.t()) :: :ok, {:error, term})
+  def remove_player_from_team(team_id, player_id) do
+    command = %LeaveTeam{team_id: team_id, player_id: player_id}
+    CommandRouter.dispatch(command)
   end
 
   def schedule_pickup_game(team_id, location, start_time) do

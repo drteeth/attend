@@ -5,7 +5,7 @@ defmodule Attend.Projections.Team do
   defmodule Player do
     use Ecto.Schema
 
-    @primary_key {:id, :binary_id, autogenerate: true}
+    @primary_key {:id, :binary_id, autogenerate: false}
     embedded_schema do
       field :name
       field :email
@@ -13,8 +13,8 @@ defmodule Attend.Projections.Team do
 
     def changeset(player, attributes) do
       player
-      |> cast(attributes, [:name, :email])
-      |> validate_required([:name, :email])
+      |> cast(attributes, [:id, :name, :email])
+      |> validate_required([:id, :name, :email])
     end
   end
 
@@ -23,7 +23,7 @@ defmodule Attend.Projections.Team do
   schema "teams" do
     field :name, :string
 
-    embeds_many(:players, Player)
+    embeds_many(:players, Player, on_replace: :delete)
 
     timestamps()
   end

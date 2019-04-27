@@ -97,6 +97,12 @@ defmodule AttendTest do
     email
   end
 
+  test "Removing a player from a team" do
+    {:ok, team_id} = Attend.register_team("The Noodles")
+    {:ok, player_id} = Attend.add_player_to_team(team_id, "Bob Ross", "bob@example.com")
+    :ok = Attend.remove_player_from_team(team_id, player_id)
+  end
+
   defp parse_player_check_id_and_token(email, answer) do
     pattern =
       ~r{#{answer}: http.+attendance/(?<player_check>[a-z-\d]+).+token=(?<token>[a-z-\d]+)}
