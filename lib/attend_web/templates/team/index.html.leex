@@ -1,4 +1,6 @@
 Teams
+
+<%= link "Register team", to: @register_team_path %>
 <ul>
 <%= for team <- @teams do %>
   <li><%= link team.name, to: team.link %></li>

@@ -30,9 +30,10 @@ defmodule Attend.EventHandlers.TeamProjector do
 
     players = existing_players ++ [event.player]
 
-    team = team
-    |> Projections.Team.changeset(%{players: players})
-    |> Repo.update!()
+    team =
+      team
+      |> Projections.Team.changeset(%{players: players})
+      |> Repo.update!()
 
     payload = Map.from_struct(team)
     Endpoint.broadcast("teams", "joined_team", payload)

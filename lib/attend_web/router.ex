@@ -21,7 +21,6 @@ defmodule AttendWeb.Router do
 
     resources "/teams", TeamController, only: [:index, :new, :show]
     resources "/attendance", AttendanceController, only: [:update]
-
   end
 
   # scope "/api", AttendWeb do

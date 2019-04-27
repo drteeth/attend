@@ -40,5 +40,4 @@ defmodule Attend.EventHandlers.AtendanceCheckEmailer do
 
     :ok
   end
-
 end
