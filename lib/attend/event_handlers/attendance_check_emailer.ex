@@ -1,28 +1,33 @@
 defmodule Attend.EventHandlers.AtendanceCheckEmailer do
   use Commanded.Event.Handler, name: __MODULE__
 
-  alias Attend.Repo
-  alias Attend.Projections.Game
-
   alias Attend.Events.{
     GameScheduled,
     AttendanceRequested
   }
 
+  @table :game_projection
+
+  def init() do
+    :ets.new(@table, [:named_table])
+    :ok
+  end
+
   def handle(%GameScheduled{} = event, _metadta) do
-    %Game{
+    game = %{
       id: event.game_id,
       team_id: event.team_id,
       start_time: NaiveDateTime.from_iso8601!(event.start_time),
       location: event.location
     }
-    |> Repo.insert()
+
+    :ets.insert(@table, {game.id, game})
 
     :ok
   end
 
   def handle(%AttendanceRequested{} = event, _metadta) do
-    game = Repo.get!(Game, event.game_id)
+    [{_, game}] = :ets.lookup(@table, event.game_id)
 
     Attend.Email.attendance_check(
       event.player_check_id,
@@ -35,4 +40,5 @@ defmodule Attend.EventHandlers.AtendanceCheckEmailer do
 
     :ok
   end
+
 end

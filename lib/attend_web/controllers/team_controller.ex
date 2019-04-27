@@ -5,16 +5,15 @@ defmodule AttendWeb.TeamController do
   alias AttendWeb.Team
 
   def index(conn, _params) do
-    live_render(conn, Team.Index, session: %{})
+    teams = []
+    live_render(conn, Team.Index, session: %{teams: teams})
   end
 
   def new(conn, _params) do
-    live_render(conn, Team.Form, session: %{team_id: Ecto.UUID.generate()})
+    live_render(conn, Team.New, session: %{team_id: Ecto.UUID.generate()})
   end
 
-  def show(conn, _params) do
-    # TODO get the ID from the params
-    # TODO preload the team?
-    live_render(conn, Team.Form, session: %{team_id: "FakeTeam"})
+  def show(conn, %{"id" => team_id}) do
+    live_render(conn, Team.Form, session: %{team_id: team_id})
   end
 end

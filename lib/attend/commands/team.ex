@@ -14,5 +14,6 @@ defmodule Attend.Models.Team do
     team
     |> cast(attrs, [:team_id, :name])
     |> validate_required([:team_id, :name])
+    |> validate_length(:name,  min: 3)
   end
 end

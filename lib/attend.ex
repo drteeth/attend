@@ -41,7 +41,8 @@ defmodule Attend do
     }
 
     case CommandRouter.dispatch(command, include_execution_result: true) do
-      {:ok, %{events: [player: %{id: player_id}]}} ->
+      {:ok, result} ->
+        %{events: [%{player: %{id: player_id}}]} = result
         {:ok, player_id}
 
       error ->

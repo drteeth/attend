@@ -1,29 +1,28 @@
 defmodule AttendWeb.Team.Form do
   use Phoenix.LiveView
 
-  alias Attend.Models.{Player, Team}
+  alias Attend.Models.Player
   alias AttendWeb.Endpoint
+  alias Attend.Projections
+  alias Attend.Repo
 
   @impl true
   def mount(%{team_id: team_id}, socket) do
-    team = %Team{team_id: team_id}
-    changeset = Team.changeset(team, %{name: "The Noodles"})
+    # TODO handle race condition:
+    # The projection may not have finished creating the team
+    # Handle it
+    team = Repo.get!(Projections.Team, team_id)
 
-    player =
-      Player.changeset(%Player{}, %{
-        name: "Bob Ross",
-        email: "bob@example.com"
-      })
+    player = build_player()
 
     socket =
       assign(socket,
         team: team,
-        changeset: changeset,
-        new_player: player
+        changeset: player
       )
 
     if(connected?(socket)) do
-      Endpoint.subscribe("teams")
+      Endpoint.subscribe("teams:#{team_id}")
     end
 
     {:ok, socket}
@@ -35,44 +34,33 @@ defmodule AttendWeb.Team.Form do
   end
 
   @impl true
-  def handle_event("validate", %{"team" => params}, socket) do
-    team = socket.assigns.team
-    changeset = Team.changeset(team, params)
-    socket = assign(socket, changeset: changeset)
-    {:noreply, socket}
+  def handle_event("validate_player", %{"player" => params}, socket) do
+    player = socket.assigns.changeset.data
+    changeset = Player.changeset(player, params)
+
+    {:noreply, assign(socket, changeset: changeset)}
   end
 
-  def handle_event("add_team", %{"team" => params}, socket) do
-    team = socket.assigns.team
-    changeset = Team.changeset(team, params)
-
-    id = team.team_id
-    name = changeset.changes.name
-
-    case Attend.register_team(name, id) do
-      {:ok, _game_id} ->
-        {:noreply, socket}
-
-      {:error, _reason} ->
-        {:error, socket}
-    end
-  end
-
+  @impl true
   def handle_event("add_player", %{"player" => params}, socket) do
-    team_id = socket.assigns.team.team_id
+    team_id = socket.assigns.team.id
     name = params["name"]
     email = params["email"]
 
     case Attend.add_player_to_team(team_id, name, email) do
       {:ok, _player_id} ->
-        {:noreply, socket}
+        {:noreply, assign(socket, changeset: build_player())}
 
       {:error, _reason} ->
         {:error, socket}
     end
   end
 
-  def handle_info(%{topic: "teams", payload: team, event: _event}, socket) do
+  def handle_info(%{event: "joined_team", payload: team}, socket) do
     {:noreply, assign(socket, team: team)}
+  end
+
+  defp build_player() do
+    Player.changeset(%Player{}, %{})
   end
 end

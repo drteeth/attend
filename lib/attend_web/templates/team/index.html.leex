@@ -1,4 +1,6 @@
 Teams
+<ul>
 <%= for team <- @teams do %>
-  <%= team.name %>
+  <li><%= link team.name, to: team.link %></li>
 <% end %>
+</ul>

@@ -16,7 +16,7 @@ defmodule Attend.Application do
       # {Attend.Worker, arg},
       Attend.ProcessManagers.AttendanceCheckManager,
       Attend.EventHandlers.AtendanceCheckEmailer,
-      Attend.EventHandlers.ChannelNotifier
+      Attend.EventHandlers.TeamProjector
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

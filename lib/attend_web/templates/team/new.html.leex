@@ -1,0 +1,9 @@
+<%= form_for @changeset, "#", [as: :team, phx_change: :validate_team, phx_submit: :register_team, autocomplete: "off", class: "foo"], fn f -> %>
+  <%= text_input f, :name, placeholder: "Team name"%>
+
+  <%= if @changeset.valid? do %>
+    <%= submit "Create team" %>
+  <% else %>
+    <%= submit "Create team", disabled: true %>
+  <% end %>
+<% end %>
