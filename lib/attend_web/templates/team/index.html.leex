@@ -1,6 +1,7 @@
-Teams
+<%= link "Register team", to: @register_team_path, class: "button" %>
 
-<%= link "Register team", to: @register_team_path %>
+<h1>Teams</h1>
+
 <ul>
 <%= for team <- @teams do %>
   <li><%= link team.name, to: team.link %></li>

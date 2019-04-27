@@ -14,6 +14,6 @@ defmodule AttendWeb.TeamController do
   end
 
   def show(conn, %{"id" => team_id}) do
-    live_render(conn, Team.Form, session: %{team_id: team_id})
+    live_render(conn, Team.Show, session: %{team_id: team_id})
   end
 end
