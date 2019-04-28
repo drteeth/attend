@@ -19,8 +19,9 @@ defmodule AttendWeb.Router do
 
     get "/", PageController, :index
 
-    resources "/teams", TeamController, only: [:index, :new, :show]
     resources "/attendance", AttendanceController, only: [:update]
+    resources "/teams", TeamController, only: [:index, :new, :show]
+    resources "/games", GameController, only: [:index, :new, :show]
   end
 
   # scope "/api", AttendWeb do

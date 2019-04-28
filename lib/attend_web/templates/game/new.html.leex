@@ -1,0 +1,33 @@
+<h1>Schedule a pickup game</h1>
+
+<form action="#" autocomplete="off"
+      phx-change="validate_game"
+      phx-submit="schedule_game">
+
+  <div class="field">
+    <%= label :game, :location, "Location" %>
+    <%= text_input :game, :location, value: @game["location"] %>
+  </div>
+
+  <div class="field">
+    <%= label :game, :date, "Date" %>
+    <%= date_input :game, :date, value: @game["date"] %>
+  </div>
+
+  <div class="field">
+    <%= label :game, :time, "Time" %>
+    <%= time_input :game, :time, value: @game["time"] %>
+  </div>
+
+  <div class="field">
+    <%= label :game, :team_id, "Team" %>
+    <%= select :game, :team_id, @teams, value: @game["team_id"] %>
+  </div>
+
+  <%= if @is_valid do %>
+    <button type="submit">Schedule game</button>
+  <% else %>
+    <button type="submit" disabled="true">Schedule game</button>
+  <% end %>
+
+</form>

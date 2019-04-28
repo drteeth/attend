@@ -18,8 +18,11 @@ defmodule Attend.Storage do
     config = Application.get_env(:attend, Attend.Repo)
 
     {:ok, conn} = Postgrex.start_link(config)
-
     Postgrex.query!(conn, truncate_readstore_tables(), [])
+
+    redis_config = Application.get_env(:attend, :redis_read_db)
+    {:ok, redis} = Redix.start_link(redis_config)
+    Redix.command!(redis, ["FLUSHALL"])
   end
 
   defp truncate_readstore_tables do

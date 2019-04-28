@@ -48,7 +48,8 @@ defmodule Attend.MixProject do
       {:commanded_eventstore_adapter, "~> 0.5"},
       {:commanded_ecto_projections, "~> 0.8"},
       {:eventstore, "~> 0.16.1"},
-      {:bamboo, "~> 1.2"}
+      {:bamboo, "~> 1.2"},
+      {:redix, "~> 0.10.0"}
     ]
   end
 
@@ -69,7 +70,8 @@ defmodule Attend.MixProject do
         "ecto.create",
         "ecto.migrate",
         "event_store.create",
-        "event_store.init"
+        "event_store.init",
+        "run priv/repo/seeds.exs"
       ],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]

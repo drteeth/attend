@@ -13,12 +13,11 @@ defmodule Attend.EventHandlers.TeamProjector do
       name: event.name
     }
 
-    team = Repo.insert!(team)
+    team
+    |> Repo.insert!()
+    |> broadcast()
 
-    # TODO use a view to render the team
-    # resp = View.render_one(team, MessageView, "message_sent.json", %{sent: sent})
-    Endpoint.broadcast("teams", "team_registered", Map.from_struct(team))
-    Endpoint.broadcast("team:#{team.id}", "team_registered", Map.from_struct(team))
+    :ok
   end
 
   def handle(%Events.JoinedTeam{} = event, _metadata) do
@@ -30,14 +29,11 @@ defmodule Attend.EventHandlers.TeamProjector do
 
     players = existing_players ++ [event.player]
 
-    team =
-      team
-      |> Projections.Team.changeset(%{players: players})
-      |> Repo.update!()
+    team
+    |> Projections.Team.changeset(%{players: players})
+    |> Repo.update!()
+    |> broadcast()
 
-    payload = Map.from_struct(team)
-    Endpoint.broadcast("teams", "joined_team", payload)
-    Endpoint.broadcast("teams:#{team.id}", "joined_team", payload)
     :ok
   end
 
@@ -52,14 +48,19 @@ defmodule Attend.EventHandlers.TeamProjector do
 
     players = List.delete(existing_players, player)
 
-    team =
-      team
-      |> Projections.Team.changeset(%{players: players})
-      |> Repo.update!()
+    team
+    |> Projections.Team.changeset(%{players: players})
+    |> Repo.update!()
+    |> broadcast()
 
+    :ok
+  end
+
+  defp broadcast(team) do
+    # TODO use a view to render the team
+    # resp = View.render_one(team, MessageView, "message_sent.json", %{sent: sent})
     payload = Map.from_struct(team)
     Endpoint.broadcast("teams", "joined_team", payload)
     Endpoint.broadcast("teams:#{team.id}", "joined_team", payload)
-    :ok
   end
 end

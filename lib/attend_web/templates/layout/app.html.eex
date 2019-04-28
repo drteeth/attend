@@ -13,6 +13,7 @@
         <nav role="navigation">
           <ul>
             <li><%= link "Teams", to: Routes.team_path(@conn, :index) %></li>
+            <li><%= link "Games", to: Routes.game_path(@conn, :index) %></li>
           </ul>
         </nav>
       </section>

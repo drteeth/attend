@@ -30,6 +30,9 @@ config :eventstore, EventStore.Storage,
 
 config :attend, Attend.Email.Mailer, adapter: Bamboo.TestAdapter
 
+config :attend, :redis_read_db,
+  database: 4
+
 if File.exists?("config/test.secret.exs") do
   import_config "test.secret.exs"
 end

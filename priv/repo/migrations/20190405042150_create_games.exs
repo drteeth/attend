@@ -8,6 +8,7 @@ defmodule Attend.Repo.Migrations.CreateGames do
       add :start_time, :naive_datetime
       # , references(:teams, on_delete: :nothing, type: :binary_id)
       add :team_id, :binary_id
+      add :team_name, :string
 
       timestamps()
     end

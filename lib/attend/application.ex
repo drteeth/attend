@@ -8,15 +8,13 @@ defmodule Attend.Application do
   def start(_type, _args) do
     # List all child processes to be supervised
     children = [
-      # Start the Ecto repository
       Attend.Repo,
-      # Start the endpoint when the application starts
       AttendWeb.Endpoint,
-      # Starts a worker by calling: Attend.Worker.start_link(arg)
-      # {Attend.Worker, arg},
       Attend.ProcessManagers.AttendanceCheckManager,
       Attend.EventHandlers.AtendanceCheckEmailer,
-      Attend.EventHandlers.TeamProjector
+      Attend.EventHandlers.TeamProjector,
+      Attend.EventHandlers.GameProjector,
+      {Redix, redis_config()}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -30,5 +28,10 @@ defmodule Attend.Application do
   def config_change(changed, _new, removed) do
     AttendWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp redis_config do
+    Application.get_env(:attend, :redis_read_db)
+    |> Keyword.merge(name: :redix)
   end
 end
