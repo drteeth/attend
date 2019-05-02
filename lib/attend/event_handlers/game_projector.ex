@@ -1,5 +1,5 @@
 defmodule Attend.EventHandlers.GameProjector do
-  use Commanded.Projections.Ecto, name: __MODULE__
+  use Commanded.Event.Handler, name: __MODULE__
 
   alias Attend.Events
   alias Attend.Projections.Game.Index

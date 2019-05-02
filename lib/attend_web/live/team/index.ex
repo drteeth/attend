@@ -3,9 +3,9 @@ defmodule AttendWeb.Team.Index do
 
   alias AttendWeb.Router.Helpers, as: Routes
   alias AttendWeb.Endpoint
-  alias Attend.Repo
   alias Attend.Projections
 
+  @impl true
   def mount(_args, socket) do
     socket =
       assign(socket,
@@ -20,16 +20,18 @@ defmodule AttendWeb.Team.Index do
     {:ok, socket}
   end
 
+  @impl true
   def render(assigns) do
     AttendWeb.TeamView.render("index.html", assigns)
   end
 
+  @impl true
   def handle_info(%{event: "team_registered"}, socket) do
     {:noreply, assign(socket, teams: load_teams())}
   end
 
   defp load_teams() do
-    Repo.all(Projections.Team)
+    Projections.Team.Index.all()
     |> Enum.map(fn team ->
       link = Routes.team_path(Endpoint, :show, team.id)
       Map.put(team, :link, link)

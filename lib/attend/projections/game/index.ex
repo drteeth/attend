@@ -12,7 +12,6 @@ defmodule Attend.Projections.Game.Index do
 
   def put(game) do
     Redix.command!(:redix, ["HSET", @games, game.id, Jason.encode!(game)])
-    IO.inspect(game)
     game
   end
 

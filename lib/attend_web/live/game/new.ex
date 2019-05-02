@@ -5,7 +5,7 @@ defmodule AttendWeb.Game.New do
 
   def mount(%{game_id: game_id}, socket) do
     teams =
-      Attend.Repo.all(Attend.Projections.Team)
+      Attend.Projections.Team.Index.all()
       |> Enum.map(fn t -> {t.name, t.id} end)
 
     game = %{

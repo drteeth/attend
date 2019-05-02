@@ -4,14 +4,13 @@ defmodule AttendWeb.Team.Show do
   alias Attend.Models.Player
   alias AttendWeb.Endpoint
   alias Attend.Projections
-  alias Attend.Repo
 
   @impl true
   def mount(%{team_id: team_id}, socket) do
     # TODO handle race condition:
     # The projection may not have finished creating the team
     # Handle it
-    team = Repo.get!(Projections.Team, team_id)
+    team = Projections.Team.Show.get(team_id)
 
     player = build_player()
 
@@ -70,6 +69,7 @@ defmodule AttendWeb.Team.Show do
     end
   end
 
+  @impl true
   def handle_info(%{event: "joined_team", payload: team}, socket) do
     {:noreply, assign(socket, team: team)}
   end

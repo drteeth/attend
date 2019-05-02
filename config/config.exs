@@ -33,9 +33,6 @@ config :phoenix,
 config :commanded,
   event_store_adapter: Commanded.EventStore.Adapters.EventStore
 
-config :commanded_ecto_projections,
-  repo: Attend.Repo
-
 # Commands are eventually consistent by default
 config :commanded, default_consistency: :eventual
 

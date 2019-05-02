@@ -5,6 +5,7 @@ defmodule AttendWeb.Game.Index do
   alias AttendWeb.Endpoint
   alias Attend.Projections.Game.Index, as: GameIndex
 
+  @impl true
   def mount(_args, socket) do
     socket =
       assign(socket,
@@ -19,6 +20,7 @@ defmodule AttendWeb.Game.Index do
     {:ok, socket}
   end
 
+  @impl true
   def render(assigns) do
     AttendWeb.GameView.render("index.html", assigns)
   end
