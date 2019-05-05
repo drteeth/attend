@@ -1,7 +1,7 @@
 defmodule AttendWeb.Game.Show do
   use Phoenix.LiveView
 
-  def mount(%{game_id: _game_id}, socket) do
+  def mount(game_id, socket) do
     {:ok, socket}
   end
 

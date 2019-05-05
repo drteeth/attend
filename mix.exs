@@ -66,6 +66,7 @@ defmodule Attend.MixProject do
       "attend.reset": [
         "event_store.drop",
         "ecto.drop",
+        "projections.reset",
         "ecto.create",
         "ecto.migrate",
         "event_store.create",

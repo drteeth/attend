@@ -1,5 +1,8 @@
 defmodule AttendWeb.Router do
   use AttendWeb, :router
+  import Phoenix.LiveView.Router
+
+  alias AttendWeb
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -20,11 +23,14 @@ defmodule AttendWeb.Router do
     get "/", PageController, :index
 
     resources "/attendance", AttendanceController, only: [:update]
-    resources "/teams", TeamController, only: [:index, :new, :show]
-    resources "/games", GameController, only: [:index, :new, :show]
+
+    live "/teams", Team.Index
+    live "/teams/new", Team.New
+    live "/teams/:id", Team.Show
+
+    live "/games", Game.Index
+    live "/games/new", Game.New
+    live "/games/:id", Game.Show
   end
 
-  # scope "/api", AttendWeb do
-  #   pipe_through :api
-  # end
 end

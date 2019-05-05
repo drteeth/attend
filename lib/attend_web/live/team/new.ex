@@ -6,7 +6,8 @@ defmodule AttendWeb.Team.New do
   alias AttendWeb.Endpoint
 
   @impl true
-  def mount(%{team_id: team_id}, socket) do
+  def mount(_args, socket) do
+    team_id = Ecto.UUID.generate()
     team = Team.changeset(%Team{team_id: team_id}, %{})
     socket = assign(socket, changeset: team)
 
@@ -34,18 +35,19 @@ defmodule AttendWeb.Team.New do
   def handle_event("register_team", %{"team" => params}, socket) do
     team = socket.assigns.changeset.data
 
-    case Attend.register_team(params["name"], team.id) do
-      {:ok, team} ->
+    case Attend.register_team(params["name"], team.team_id) do
+      {:ok, team_id} ->
         {:stop,
          socket
          |> put_flash(:info, "Team registered successfully.")
-         |> redirect(to: Routes.team_path(socket, :show, team))}
+         |> redirect(to: Routes.live_path(Endpoint, AttendWeb.Team.Show, team_id))}
 
       {:error, _reason} ->
         {:noreply, socket}
     end
   end
 
+  @impl true
   def handle_info(%{event: "team_registered", payload: team}, socket) do
     {:noreply, assign(socket, team: team)}
   end

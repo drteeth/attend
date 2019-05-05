@@ -2,6 +2,7 @@ defmodule Attend.Models.Team do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Phoenix.Param, key: :team_id}
   embedded_schema do
     field :team_id, :binary_id
     field :name, :string

@@ -1,11 +1,15 @@
 defmodule AttendWeb.Game.New do
   use Phoenix.LiveView
 
+  alias Attend.Projections.Team
   alias AttendWeb.Router.Helpers, as: Routes
+  alias AttendWeb.Endpoint
 
-  def mount(%{game_id: game_id}, socket) do
+  def mount(_args, socket) do
+    game_id = Ecto.UUID.generate()
+
     teams =
-      Attend.Projections.Team.Index.all()
+      Team.all()
       |> Enum.map(fn t -> {t.name, t.id} end)
 
     game = %{
@@ -61,10 +65,13 @@ defmodule AttendWeb.Game.New do
 
     case Attend.schedule_pickup_game(team_id, location, start_time) do
       {:ok, game_id} ->
+        path =
+          Routes.live_path(Endpoint, AttendWeb.Game.Show, game_id)
+
         {:stop,
          socket
          |> put_flash(:info, "Game scheduled")
-         |> redirect(to: Routes.game_path(socket, :show, game_id))}
+         |> redirect(to: path)}
 
       {:error, reason} ->
         {:noreply, assign(socket, error: reason)}

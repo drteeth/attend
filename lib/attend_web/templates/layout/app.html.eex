@@ -12,8 +12,8 @@
       <section class="container">
         <nav role="navigation">
           <ul>
-            <li><%= link "Teams", to: Routes.team_path(@conn, :index) %></li>
-            <li><%= link "Games", to: Routes.game_path(@conn, :index) %></li>
+            <li><%= link "Teams", to: Routes.live_path(@conn, AttendWeb.Team.Index) %></li>
+            <li><%= link "Games", to: Routes.live_path(@conn, AttendWeb.Game.Index) %></li>
           </ul>
         </nav>
       </section>

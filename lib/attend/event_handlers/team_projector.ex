@@ -3,8 +3,7 @@ defmodule Attend.EventHandlers.TeamProjector do
 
   alias Attend.Events
   alias AttendWeb.Endpoint
-  alias Attend.Projections.Team.Index
-  alias Attend.Projections.Team.Show
+  alias Attend.Projections.Team
 
   def handle(%Events.TeamRegistered{} = event, _metadata) do
     team = %{
@@ -14,24 +13,23 @@ defmodule Attend.EventHandlers.TeamProjector do
     }
 
     team
-    |> Index.create_team()
-    |> Show.create_team()
+    |> Team.create_team()
     |> broadcast("team_registered")
 
     :ok
   end
 
   def handle(%Events.JoinedTeam{} = event, _metadata) do
-    Show.get(event.team_id)
-    |> Show.add_player(event.player)
+    Team.get(event.team_id)
+    |> Team.add_player(event.player)
     |> broadcast("joined_team")
 
     :ok
   end
 
   def handle(%Events.LeftTeam{} = event, _metadata) do
-    Show.get(event.team_id)
-    |> Show.remove_player(event.player)
+    Team.get(event.team_id)
+    |> Team.remove_player(event.player)
     |> broadcast("left_team")
 
     :ok

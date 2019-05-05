@@ -1,17 +1,12 @@
 defmodule AttendWeb.Team.Index do
   use Phoenix.LiveView
 
-  alias AttendWeb.Router.Helpers, as: Routes
   alias AttendWeb.Endpoint
-  alias Attend.Projections
+  alias Attend.Projections.Team
 
   @impl true
   def mount(_args, socket) do
-    socket =
-      assign(socket,
-        teams: load_teams(),
-        register_team_path: Routes.team_path(socket, :new)
-      )
+    socket = assign(socket, teams: load_teams())
 
     if connected?(socket) do
       Endpoint.subscribe("teams")
@@ -30,11 +25,5 @@ defmodule AttendWeb.Team.Index do
     {:noreply, assign(socket, teams: load_teams())}
   end
 
-  defp load_teams() do
-    Projections.Team.Index.all()
-    |> Enum.map(fn team ->
-      link = Routes.team_path(Endpoint, :show, team.id)
-      Map.put(team, :link, link)
-    end)
-  end
+  defp load_teams(), do: Team.all()
 end

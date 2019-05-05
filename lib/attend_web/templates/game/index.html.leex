@@ -1,9 +1,9 @@
-<%= link "Schedule pickup game", to: @schedule_pickup_game_path, class: "button" %>
+<%= link "Schedule pickup game", to: Routes.live_path(AttendWeb.Endpoint, AttendWeb.Game.New), class: "button" %>
 
 <h1>Pickup games</h1>
 
 <ul>
 <%= for game <- @games do %>
-  <li><%= link "#{game["team"]["name"]} @ #{game["location"]}", to: game.link %></li>
+  <li><%= link "#{game.team_name} @ #{game.location}", to: game_path(game) %></li>
 <% end %>
 </ul>

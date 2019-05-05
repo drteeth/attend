@@ -1,17 +1,13 @@
 defmodule AttendWeb.Game.Index do
   use Phoenix.LiveView
 
-  alias AttendWeb.Router.Helpers, as: Routes
+  alias Attend.Projections.Game
   alias AttendWeb.Endpoint
-  alias Attend.Projections.Game.Index, as: GameIndex
+  alias AttendWeb.GameView
 
   @impl true
   def mount(_args, socket) do
-    socket =
-      assign(socket,
-        games: load_games(),
-        schedule_pickup_game_path: Routes.game_path(socket, :new)
-      )
+    socket = assign(socket, games: load_games())
 
     if connected?(socket) do
       Endpoint.subscribe("games")
@@ -22,14 +18,15 @@ defmodule AttendWeb.Game.Index do
 
   @impl true
   def render(assigns) do
-    AttendWeb.GameView.render("index.html", assigns)
+    GameView.render("index.html", assigns)
+  end
+
+  @impl true
+  def handle_info(%{event: "game_scheduled"}, socket) do
+    {:noreply, assign(socket, teams: load_games())}
   end
 
   defp load_games() do
-    GameIndex.all()
-    |> Enum.map(fn game ->
-      link = Routes.game_path(Endpoint, :show, game["id"])
-      Map.put(game, :link, link)
-    end)
+    Game.all()
   end
 end

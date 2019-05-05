@@ -1,9 +1,9 @@
-<%= link "Register team", to: @register_team_path, class: "button" %>
+<%= link "Register team", to: Routes.live_path(AttendWeb.Endpoint, AttendWeb.Team.New), class: "button" %>
 
 <h1>Teams</h1>
 
 <ul>
 <%= for team <- @teams do %>
-  <li><%= link team.name, to: team.link %></li>
+  <li><%= link team.name, to: Routes.live_path(AttendWeb.Endpoint, AttendWeb.Team.Show, team.id) %></li>
 <% end %>
 </ul>

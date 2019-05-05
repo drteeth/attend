@@ -3,14 +3,14 @@ defmodule AttendWeb.Team.Show do
 
   alias Attend.Models.Player
   alias AttendWeb.Endpoint
-  alias Attend.Projections
+  alias Attend.Projections.Team
 
   @impl true
-  def mount(%{team_id: team_id}, socket) do
+  def mount(%{path_params: %{"id" => team_id}}, socket) do
     # TODO handle race condition:
     # The projection may not have finished creating the team
     # Handle it
-    team = Projections.Team.Show.get(team_id)
+    team = Team.get(team_id)
 
     player = build_player()
 
