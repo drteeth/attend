@@ -22,7 +22,7 @@ defmodule Attend.Storage do
 
     redis_config = Application.get_env(:attend, :redis_read_db)
     {:ok, redis} = Redix.start_link(redis_config)
-    Redix.command!(redis, ["FLUSHALL"])
+    Redix.command!(redis, ["FLUSHDB"])
   end
 
   defp truncate_readstore_tables do

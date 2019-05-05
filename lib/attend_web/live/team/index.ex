@@ -1,8 +1,9 @@
 defmodule AttendWeb.Team.Index do
   use Phoenix.LiveView
 
-  alias AttendWeb.Endpoint
   alias Attend.Projections.Team
+  alias AttendWeb.Endpoint
+  alias AttendWeb.TeamView
 
   @impl true
   def mount(_args, socket) do
@@ -17,7 +18,7 @@ defmodule AttendWeb.Team.Index do
 
   @impl true
   def render(assigns) do
-    AttendWeb.TeamView.render("index.html", assigns)
+    TeamView.render("index.html", assigns)
   end
 
   @impl true

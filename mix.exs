@@ -66,11 +66,11 @@ defmodule Attend.MixProject do
       "attend.reset": [
         "event_store.drop",
         "ecto.drop",
-        "projections.reset",
         "ecto.create",
         "ecto.migrate",
         "event_store.create",
         "event_store.init",
+        "projections.reset",
         "run priv/repo/seeds.exs"
       ],
       test: ["ecto.create --quiet", "ecto.migrate", "test"]
