@@ -32,5 +32,4 @@ defmodule AttendWeb.Router do
     live "/games/new", Game.New
     live "/games/:id", Game.Show
   end
-
 end

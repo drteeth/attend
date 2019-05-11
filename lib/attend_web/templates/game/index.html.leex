@@ -4,6 +4,6 @@
 
 <ul>
 <%= for game <- @games do %>
-  <li><%= link "#{game.team_name} @ #{game.location}", to: game_path(game) %></li>
+  <li><%= link "#{game.team_name} @ #{game.location}", to: game_path(game) %> - <%= game.status %></li>
 <% end %>
 </ul>

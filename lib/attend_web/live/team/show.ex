@@ -17,6 +17,7 @@ defmodule AttendWeb.Team.Show do
     socket =
       assign(socket,
         team: team,
+        upcoming_games: upcoming_games(team.id),
         changeset: player
       )
 
@@ -56,6 +57,20 @@ defmodule AttendWeb.Team.Show do
   end
 
   @impl true
+  def handle_event("request_attendance", args, socket) do
+    [game_id, team_id] = String.split(args, ",")
+    IO.inspect(game_id: game_id, team_id: team_id)
+
+    case Attend.check_attendance(game_id, team_id) do
+      {:ok, _check_id} ->
+        {:noreply, socket}
+
+      {:error, _reason} ->
+        {:noreply, socket}
+    end
+  end
+
+  @impl true
   def handle_event("remove_player", player_id, socket) do
     team = socket.assigns.team
 
@@ -76,5 +91,9 @@ defmodule AttendWeb.Team.Show do
 
   defp build_player() do
     Player.changeset(%Player{}, %{})
+  end
+
+  defp upcoming_games(team) do
+    Team.upcoming_games(team)
   end
 end

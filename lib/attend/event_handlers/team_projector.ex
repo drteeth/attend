@@ -4,6 +4,7 @@ defmodule Attend.EventHandlers.TeamProjector do
   alias Attend.Events
   alias AttendWeb.Endpoint
   alias Attend.Projections.Team
+  alias Attend.Projections.Team.Game
 
   def handle(%Events.TeamRegistered{} = event, _metadata) do
     team = %{
@@ -32,6 +33,25 @@ defmodule Attend.EventHandlers.TeamProjector do
     |> Team.remove_player(event.player)
     |> broadcast("left_team")
 
+    :ok
+  end
+
+  def handle(%Events.GameScheduled{} = event, _metadata) do
+    Team.add_game(%Game{
+      game_id: event.game_id,
+      location: event.location,
+      start_time: event.start_time,
+      team_id: event.team_id
+    })
+
+    :ok
+  end
+
+  def handle(%Events.GameCancelled{} = _event, _metadata) do
+    :ok
+  end
+
+  def handle(%Events.GameEnded{} = _event, _metadata) do
     :ok
   end
 

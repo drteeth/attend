@@ -8,7 +8,8 @@ defmodule Attend.Projections.Game do
     :location,
     :start_time,
     :team_id,
-    :team_name
+    :team_name,
+    :status
   ]
 
   alias __MODULE__, as: Game
@@ -44,6 +45,13 @@ defmodule Attend.Projections.Game do
     Redix.command!(:redix, ["HGETALL", @games])
     |> Enum.drop_every(2)
     |> Enum.map(&deserialize/1)
+  end
+
+  @spec update_status(id, atom) :: :ok
+  def update_status(game_id, status) do
+    get(game_id)
+    |> Map.put(:status, status)
+    |> put()
   end
 
   defp serialize(term) do

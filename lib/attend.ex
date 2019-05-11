@@ -58,7 +58,8 @@ defmodule Attend do
     CommandRouter.dispatch(command)
   end
 
-  @spec schedule_pickup_game(UUID.t(), String.t(), Datetime.t()) :: {:ok, UUID.t} | {:error, term}
+  @spec schedule_pickup_game(UUID.t(), String.t(), Datetime.t()) ::
+          {:ok, UUID.t()} | {:error, term}
   def schedule_pickup_game(team_id, location, start_time) do
     game_id = UUID.generate()
 
@@ -78,6 +79,7 @@ defmodule Attend do
     end
   end
 
+  @spec check_attendance(UUID.t(), UUID.t()) :: {:ok, UUID.t()} | {:error, term}
   def check_attendance(game_id, team_id) do
     check_id = UUID.generate()
 

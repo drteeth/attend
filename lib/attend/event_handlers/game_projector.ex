@@ -19,7 +19,8 @@ defmodule Attend.EventHandlers.GameProjector do
       location: event.location,
       start_time: start_time,
       team_id: event.team_id,
-      team_name: team_name
+      team_name: team_name,
+      status: :scheduled
     }
 
     Game.put(game)
@@ -28,7 +29,20 @@ defmodule Attend.EventHandlers.GameProjector do
     :ok
   end
 
-  # TODO handle cancel, end, etc
+  def handle(%Events.GameCancelled{} = event, _metadata) do
+    Game.update_status(event.game_id, :cancelled)
+    :ok
+  end
+
+  def handle(%Events.GameStarted{} = event, _metadata) do
+    Game.update_status(event.game_id, :stated)
+    :ok
+  end
+
+  def handle(%Events.GameEnded{} = event, _metadata) do
+    Game.update_status(event.game_id, :ended)
+    :ok
+  end
 
   defp broadcast(game) do
     # TODO use a view to render the game

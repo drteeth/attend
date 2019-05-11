@@ -1,0 +1,6 @@
+Team: <%= link @game.team_name, to: Routes.live_path(AttendWeb.Endpoint, AttendWeb.Team.Show, @game.team_id) %><br />
+
+Location: <%= @game.location %>
+<br />
+
+<button phx-click="cancel_game" phx-value="<%= @game.id %>">Cancel</button>

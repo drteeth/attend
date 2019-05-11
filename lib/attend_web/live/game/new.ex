@@ -65,8 +65,7 @@ defmodule AttendWeb.Game.New do
 
     case Attend.schedule_pickup_game(team_id, location, start_time) do
       {:ok, game_id} ->
-        path =
-          Routes.live_path(Endpoint, AttendWeb.Game.Show, game_id)
+        path = Routes.live_path(Endpoint, AttendWeb.Game.Show, game_id)
 
         {:stop,
          socket

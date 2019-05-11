@@ -6,6 +6,7 @@ defmodule Attend.Projections.Team do
   @type player :: Player.t()
 
   @key "team-projection"
+  @games "games-for-teams"
 
   @derive Jason.Encoder
   defstruct id: nil, name: nil, players: []
@@ -13,6 +14,10 @@ defmodule Attend.Projections.Team do
   defmodule Player do
     @derive Jason.Encoder
     defstruct [:id]
+  end
+
+  defmodule Game do
+    defstruct [:game_id, :location, :start_time, :team_id]
   end
 
   @spec create_team(team) :: team
@@ -23,9 +28,7 @@ defmodule Attend.Projections.Team do
   @spec all() :: list(team)
   def all() do
     Redix.command!(:redix, ["HGETALL", @key])
-    |> IO.inspect()
     |> Enum.drop_every(2)
-    |> IO.inspect()
     |> Enum.map(&deserialize/1)
   end
 
@@ -48,7 +51,22 @@ defmodule Attend.Projections.Team do
   def remove_player(team, _player_id) do
     # TODO actually remove the player...
     team
-    |> IO.inspect(label: "team#remove_player()")
+  end
+
+  @spec add_game(Game.t()) :: Game.t()
+  def add_game(%Game{} = game) do
+    # TODO: ZADD for a sorted set?
+    serialized = serialize(game)
+    Redix.command!(:redix, ["RPUSH", "#{@games}_#{game.team_id}", serialized])
+    game
+  end
+
+  @spec upcoming_games(id) :: list(Game.t())
+  def upcoming_games(team_id) do
+    # TODO only upcoming_games
+    Redix.command!(:redix, ["LRANGE", "#{@games}_#{team_id}", 0, -1])
+    |> Enum.map(&deserialize/1)
+    |> IO.inspect()
   end
 
   @spec put_team(team) :: team
@@ -64,5 +82,4 @@ defmodule Attend.Projections.Team do
   defp deserialize(str) do
     :erlang.binary_to_term(str)
   end
-
 end

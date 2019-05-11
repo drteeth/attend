@@ -18,3 +18,12 @@
     <%= submit "Add player", disabled: true %>
   <% end %>
 <% end %>
+
+<ul>
+  <%= for game <- @upcoming_games do %>
+    <li>
+      <%= link game.location, to: Routes.live_path(AttendWeb.Endpoint, AttendWeb.Game.Show, game.game_id) %>
+      <button phx-click="request_attendance" phx-value="<%= game.game_id %>,<%= game.team_id %>">Request attendance</button>
+    </li>
+  <% end %>
+</ul>
