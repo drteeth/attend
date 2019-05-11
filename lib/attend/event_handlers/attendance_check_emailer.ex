@@ -6,11 +6,18 @@ defmodule Attend.EventHandlers.AtendanceCheckEmailer do
     AttendanceRequested
   }
 
-  @table :game_projection
+  defmodule Store do
+    @key "attendance-check-emailer-store"
 
-  def init() do
-    :ets.new(@table, [:named_table])
-    :ok
+    def put(game) do
+      serialized = :erlang.term_to_binary(game)
+      Redix.command!(:redix, ["HSET", @key, game.id, serialized])
+    end
+
+    def get(game_id) do
+      serialized = Redix.command!(:redix, ["HGET", @key, game_id])
+      :erlang.binary_to_term(serialized)
+    end
   end
 
   def handle(%GameScheduled{} = event, _metadta) do
@@ -21,13 +28,13 @@ defmodule Attend.EventHandlers.AtendanceCheckEmailer do
       location: event.location
     }
 
-    :ets.insert(@table, {game.id, game})
+    Store.put(game)
 
     :ok
   end
 
   def handle(%AttendanceRequested{} = event, _metadta) do
-    [{_, game}] = :ets.lookup(@table, event.game_id)
+    game = Store.get(event.game_id)
 
     Attend.Email.attendance_check(
       event.player_check_id,
