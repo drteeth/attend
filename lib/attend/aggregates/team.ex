@@ -14,7 +14,6 @@ defmodule Attend.Aggregates.Team do
     TeamRegistered,
     JoinedTeam,
     LeftTeam,
-    AttendanceCheckStarted,
     TeamAttendanceCheckStarted
   }
 
@@ -66,11 +65,6 @@ defmodule Attend.Aggregates.Team do
     player = find_player(team, event.player_id)
     players = List.delete(team.players, player)
     %{team | players: players}
-  end
-
-  def apply(%Team{} = team, %AttendanceCheckStarted{} = event) do
-    checks = [event.check_id | team.checks]
-    %{team | checks: checks}
   end
 
   def apply(%Team{} = team, %TeamAttendanceCheckStarted{}) do

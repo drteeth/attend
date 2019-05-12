@@ -21,8 +21,13 @@ defmodule Attend.ProcessManagers.AttendanceCheckManager do
     CloseAttendanceCheck
   }
 
-  def interested?(%AttendanceCheckStarted{} = event), do: {:start, event.game_id}
-  def interested?(%TeamAttendanceCheckStarted{} = event), do: {:continue, event.game_id}
+  def interested?(%AttendanceCheckStarted{} = event) do
+    {:start, event.game_id}
+  end
+
+  def interested?(%TeamAttendanceCheckStarted{} = event) do
+    {:continue, event.game_id}
+  end
 
   def interested?(%GameEnded{} = event) do
     {:continue, event.game_id}
