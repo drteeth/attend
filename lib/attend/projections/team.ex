@@ -48,9 +48,13 @@ defmodule Attend.Projections.Team do
   end
 
   @spec remove_player(team, id) :: team
-  def remove_player(team, _player_id) do
-    # TODO actually remove the player...
-    team
+  def remove_player(team, player_id) do
+    team = get(team.id)
+    player = Enum.find(team.players, fn player -> player.id == player_id end)
+    updated_players = List.delete(team.players, player)
+
+    Map.put(team, :players, updated_players)
+    |> put_team()
   end
 
   @spec add_game(Game.t()) :: Game.t()

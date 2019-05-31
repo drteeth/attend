@@ -51,22 +51,8 @@ defmodule AttendWeb.Team.Show do
       {:ok, _player_id} ->
         {:noreply, assign(socket, changeset: build_player())}
 
-      {:error, _reason} ->
-        {:error, socket}
-    end
-  end
-
-  @impl true
-  def handle_event("request_attendance", args, socket) do
-    [game_id, team_id] = String.split(args, ",")
-    IO.inspect(game_id: game_id, team_id: team_id)
-
-    case Attend.check_attendance(game_id, team_id) do
-      {:ok, _check_id} ->
-        {:noreply, socket}
-
-      {:error, _reason} ->
-        {:noreply, socket}
+      {:error, reason} ->
+        {:noreply, assign(socket, error: reason)}
     end
   end
 
@@ -79,13 +65,26 @@ defmodule AttendWeb.Team.Show do
         {:noreply, socket}
 
       {:error, reason} ->
-        IO.inspect(reason)
         {:noreply, assign(socket, error: reason)}
     end
   end
 
   @impl true
-  def handle_info(%{event: "joined_team", payload: team}, socket) do
+  def handle_event("request_attendance", args, socket) do
+    [game_id, team_id] = String.split(args, ",")
+
+    case Attend.check_attendance(game_id, team_id) do
+      {:ok, _check_id} ->
+        {:noreply, socket}
+
+      {:error, reason} ->
+        {:noreply, assign(socket, error: reason)}
+    end
+  end
+
+  @impl true
+  def handle_info(%{payload: team}, socket) do
+    IO.inspect(team, label: "ASDFASDFASDF")
     {:noreply, assign(socket, team: team)}
   end
 

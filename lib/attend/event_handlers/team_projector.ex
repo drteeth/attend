@@ -30,7 +30,7 @@ defmodule Attend.EventHandlers.TeamProjector do
 
   def handle(%Events.LeftTeam{} = event, _metadata) do
     Team.get(event.team_id)
-    |> Team.remove_player(event.player)
+    |> Team.remove_player(event.player_id)
     |> broadcast("left_team")
 
     :ok
