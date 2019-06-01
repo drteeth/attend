@@ -20,6 +20,7 @@ defmodule AttendWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       alias AttendWeb.Router.Helpers, as: Routes
+      import TestHelper
 
       # The default endpoint for testing
       @endpoint AttendWeb.Endpoint

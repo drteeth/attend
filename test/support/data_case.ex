@@ -23,6 +23,7 @@ defmodule Attend.DataCase do
       import Ecto.Query
       import Attend.DataCase
       import Commanded.Assertions.EventAssertions
+      import TestHelper
     end
   end
 

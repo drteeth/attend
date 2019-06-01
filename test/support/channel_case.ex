@@ -24,6 +24,7 @@ defmodule AttendWeb.ChannelCase do
       import Ecto.Changeset
       import Ecto.Query
       import Commanded.Assertions.EventAssertions
+      import TestHelper
 
       # The default endpoint for testing
       @endpoint AttendWeb.Endpoint

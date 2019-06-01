@@ -2,10 +2,6 @@ defmodule Attend.Projections.TeamTest do
   use Attend.DataCase
 
   alias Attend.Projections.Team
-  alias Attend.Events.TeamRegistered
-  alias Attend.Events.JoinedTeam
-  alias Attend.Events.GameScheduled
-  alias Attend.Events.GameCancelled
 
   test ".all contains registered teams" do
     noodles_id = register_team("The Noodles")
@@ -64,43 +60,4 @@ defmodule Attend.Projections.TeamTest do
     end
   end
 
-  defp register_team(name \\ "The Noodles") do
-    {:ok, team_id} = Attend.register_team(name)
-    wait_for_event(TeamRegistered)
-    team_id
-  end
-
-  defp add_player(team_id, name, email) do
-    {:ok, player_id} = Attend.add_player_to_team(team_id, name, email)
-    wait_for_event(JoinedTeam)
-    player_id
-  end
-
-  defp schedule_game(team_id, options) do
-    location = Keyword.get(options, :location, "Test Park")
-
-    start_time =
-      Keyword.get(options, :start_time, now())
-      |> DateTime.from_naive!("Etc/UTC")
-
-    {:ok, game_id} = Attend.schedule_pickup_game(team_id, location, start_time)
-    wait_for_event(GameScheduled)
-    game_id
-  end
-
-  def cancel_game(game_id) do
-    :ok = Attend.cancel_game(game_id)
-    wait_for_event(GameCancelled)
-  end
-
-  defp days_from_now(number_of_days) do
-    DateTime.add(now(), 60 * 60 * 24 * number_of_days)
-  end
-
-  defp now() do
-    with {:ok, time} <- DateTime.now("Etc/UTC") do
-      {:ok, time} = DateTime.from_naive(time, "Etc/UTC")
-      time
-    end
-  end
 end
