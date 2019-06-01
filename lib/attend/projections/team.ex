@@ -30,6 +30,9 @@ defmodule Attend.Projections.Team do
     Redix.command!(:redix, ["HGETALL", @key])
     |> Enum.drop_every(2)
     |> Enum.map(&deserialize/1)
+    |> Enum.sort(fn a, b ->
+      a.name < b.name
+    end)
   end
 
   @spec get(id) :: team
@@ -65,12 +68,20 @@ defmodule Attend.Projections.Team do
     game
   end
 
-  @spec upcoming_games(id) :: list(Game.t())
-  def upcoming_games(team_id) do
-    # TODO only upcoming_games
+  @spec upcoming_games(id, DateTime.t()) :: list(Game.t())
+  def upcoming_games(team_id, cutoff \\ nil) do
+    {:ok, now} = DateTime.now("Etc/UTC")
+    cutoff = cutoff || now
+
     Redix.command!(:redix, ["LRANGE", "#{@games}_#{team_id}", 0, -1])
     |> Enum.map(&deserialize/1)
-    |> IO.inspect()
+    |> Enum.sort(fn a, b ->
+      a.start_time < b.start_time
+    end)
+    |> Enum.filter(fn g ->
+      {:ok, start, 0} = DateTime.from_iso8601(g.start_time)
+      DateTime.compare(start, cutoff) == :gt
+    end)
   end
 
   @spec put_team(team) :: team
